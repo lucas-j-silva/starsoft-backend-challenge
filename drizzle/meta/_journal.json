@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1770394899635,
+      "tag": "0000_ambiguous_rawhide_kid",
+      "breakpoints": true
+    }
+  ]
+}
