@@ -1,0 +1,13 @@
+---
+alwaysApply: false
+---
+
+Comment this using:
+
+- JSON Docs
+- DO NOT MODIFY the existing code logic, functionality, or structure
+- ONLY ADD documentation and comments to the existing code
+- only the necessary piece of code must be thoroughly documented using JSDoc comments (for JavaScript/TypeScript) or appropriate documentation format for other languages
+- Document all parameters, return values, and potential exceptions
+- Include usage examples in the documentation where appropriate
+- Keep it simple and descriptive
