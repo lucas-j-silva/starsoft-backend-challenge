@@ -1,0 +1,84 @@
+/**
+ * @fileoverview Data Transfer Object for creating a new seat in a room.
+ *
+ * @description
+ * This file contains the DTO class used to validate and transfer data
+ * when creating a new seat within a room. Seats are identified by their
+ * row (letter) and column (number) combination.
+ *
+ * @module create-seat.dto
+ */
+
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+  IsUUID,
+} from 'class-validator';
+
+/**
+ * Data Transfer Object for creating a new seat.
+ *
+ * @description
+ * Validates and encapsulates the data required to create a new seat in a room.
+ * Each seat is uniquely identified by its room, row, and column combination.
+ *
+ * @class CreateSeatDto
+ *
+ * @example
+ * // Create a new seat DTO for seat A12 in a specific room
+ * const createSeatDto = new CreateSeatDto({
+ *   roomId: '550e8400-e29b-41d4-a716-446655440000',
+ *   row: 'A',
+ *   column: 12,
+ * });
+ */
+export class CreateSeatDto {
+  /**
+   * The unique identifier of the room where the seat will be created.
+   *
+   * @type {string}
+   * @memberof CreateSeatDto
+   * @example '550e8400-e29b-41d4-a716-446655440000'
+   */
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID()
+  roomId: string;
+
+  /**
+   * The row identifier for the seat (typically a letter).
+   *
+   * @type {string}
+   * @memberof CreateSeatDto
+   * @example 'A' - represents row A (e.g., A1, A2, A12)
+   */
+  @IsString()
+  @IsNotEmpty()
+  row: string;
+
+  /**
+   * The column number for the seat within the row.
+   *
+   * @type {number}
+   * @memberof CreateSeatDto
+   * @example 12 - combined with row 'A' gives seat 'A12'
+   */
+  @IsNumber()
+  @IsNotEmpty()
+  @IsPositive()
+  column: number;
+
+  /**
+   * Creates an instance of CreateSeatDto.
+   *
+   * @param {Partial<CreateSeatDto>} data - Partial data to initialize the DTO.
+   *
+   * @example
+   * const dto = new CreateSeatDto({ roomId: 'uuid', row: 'B', column: 5 });
+   */
+  constructor(data: Partial<CreateSeatDto>) {
+    Object.assign(this, data);
+  }
+}
