@@ -22,6 +22,14 @@ import { RoomsService } from '../services/rooms.service';
 import { RoomSchema } from '../schemas';
 import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
 import { CreateRoomDto, ListRoomsWithPaginationDto } from '../dtos';
+import {
+  ApiCookieAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { RoomApiSchema } from '../swagger/schemas/room-api.schema';
+import { RoomsPaginationResultApiSchema } from '../swagger/schemas/rooms-pagination-result-api.schema';
 
 /**
  * Controller responsible for handling room-related HTTP requests.
@@ -39,6 +47,7 @@ import { CreateRoomDto, ListRoomsWithPaginationDto } from '../dtos';
  * // POST /rooms - Create a new room
  */
 @Controller('rooms')
+@ApiCookieAuth()
 export class RoomsController {
   /**
    * Creates an instance of RoomsController.
@@ -60,6 +69,15 @@ export class RoomsController {
    */
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'List rooms with pagination',
+    description: 'Retrieves a paginated list of rooms',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The rooms have been successfully retrieved.',
+    type: RoomsPaginationResultApiSchema,
+  })
   async listWithPagination(
     @Query() query: ListRoomsWithPaginationDto,
   ): Promise<PaginationResultDto<RoomSchema>> {
@@ -80,6 +98,23 @@ export class RoomsController {
    */
   @Get(':id')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Find a room by ID',
+    description: 'Retrieves a room by its unique identifier',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The room has been successfully retrieved.',
+    type: RoomApiSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'The room with the specified ID was not found.',
+  })
+  @ApiParam({
+    name: 'id',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
   async findById(@Param('id') id: string): Promise<RoomSchema> {
     return this.roomsService.findById(id);
   }
@@ -99,6 +134,19 @@ export class RoomsController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Create a new room',
+    description: 'Creates a new room with the given name',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The room has been successfully created.',
+    type: RoomApiSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'The room cannot be created.',
+  })
   async create(@Body() createRoomDto: CreateRoomDto): Promise<RoomSchema> {
     return this.roomsService.create(createRoomDto);
   }

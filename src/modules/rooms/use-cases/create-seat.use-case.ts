@@ -14,6 +14,7 @@ import { ICreateSeatUseCase } from '../interfaces';
 import { SeatsRepository } from '../repositories';
 import { SeatSchema } from '../schemas';
 import { RoomsService } from '../services/rooms.service';
+import { SeatAlreadyExistsException } from '../exceptions/seat-already-exists.exception';
 
 /**
  * Use case class for creating a new seat in a room.
@@ -63,6 +64,13 @@ export class CreateSeatUseCase implements ICreateSeatUseCase {
    */
   async execute(data: CreateSeatDto): Promise<SeatSchema> {
     const room = await this.roomService.findById(data.roomId);
+
+    const seatAlreadyExists = await this.seatsRepository
+      .findByRoomIdAndRowAndColumn(data.roomId, data.row, data.column)
+      .then(() => true)
+      .catch(() => null);
+
+    if (seatAlreadyExists) throw new SeatAlreadyExistsException();
 
     const seat = await this.seatsRepository.insert({
       roomId: room.id,

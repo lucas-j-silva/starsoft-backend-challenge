@@ -10,9 +10,9 @@
  * @module create-seat-body.dto
  */
 
-import { PickType } from '@nestjs/mapped-types';
+import { PickType } from '@nestjs/swagger';
 import { CreateSeatDto } from '../../dtos';
-
+import { ApiSchema } from '@nestjs/swagger';
 /**
  * Data Transfer Object for the seat creation request body.
  *
@@ -30,6 +30,10 @@ import { CreateSeatDto } from '../../dtos';
  *   "column": 12
  * }
  */
+@ApiSchema({
+  name: 'CreateSeatBodyDto',
+  description: 'Data Transfer Object for the seat creation request body',
+})
 export class CreateSeatBodyDto extends PickType(CreateSeatDto, [
   'row',
   'column',

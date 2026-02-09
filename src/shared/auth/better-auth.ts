@@ -7,6 +7,7 @@ import {
   user,
   verification,
 } from 'src/modules/auth/schemas/auth.schema';
+import { openAPI } from 'better-auth/plugins';
 
 export const BetterAuth = (drizzleClient: DrizzleClientService) =>
   betterAuth({
@@ -20,4 +21,5 @@ export const BetterAuth = (drizzleClient: DrizzleClientService) =>
       provider: 'pg',
       schema: { user, session, account, verification },
     }),
+    plugins: [openAPI()],
   });

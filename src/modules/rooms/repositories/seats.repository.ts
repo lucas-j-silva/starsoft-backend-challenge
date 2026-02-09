@@ -4,7 +4,8 @@ import { SeatInsertSchema, SeatSchema, seatsTable } from '../schemas';
 import { UnableToCreateSeatException } from '../exceptions/unable-to-create-seat.exception';
 import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
 import { PaginationDto } from 'src/shared/dtos/pagination.dto';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
+import { SeatNotFoundException } from '../exceptions/seat-not-found.exception';
 
 @Injectable()
 export class SeatsRepository {
@@ -58,6 +59,30 @@ export class SeatsRepository {
       .then((results) => results[0]);
 
     if (!seat) throw new UnableToCreateSeatException();
+
+    return seat;
+  }
+
+  async findByRoomIdAndRowAndColumn(
+    roomId: string,
+    row: string,
+    column: number,
+  ): Promise<SeatSchema | null> {
+    const seat = await this.drizzleClient
+      .getInstance()
+      .select()
+      .from(seatsTable)
+      .where(
+        and(
+          eq(seatsTable.roomId, roomId),
+          eq(seatsTable.row, row),
+          eq(seatsTable.column, column),
+        ),
+      )
+      .limit(1)
+      .then((results) => results[0]);
+
+    if (!seat) throw new SeatNotFoundException();
 
     return seat;
   }

@@ -11,6 +11,8 @@ import {
 import { CreateMovieDto } from '../dtos';
 import { MoviesService } from '../services';
 import { MovieSchema } from '../schemas';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { MovieApiSchema } from '../swagger/schemas/movie-api.schema';
 
 /**
  * Controller responsible for handling HTTP requests related to movies.
@@ -47,6 +49,19 @@ export class MoviesController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Create a new movie',
+    description: 'Creates a new movie with the given name and description',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The movie has been successfully created.',
+    type: MovieApiSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'The movie cannot be created.',
+  })
   async create(@Body() createMovieDto: CreateMovieDto): Promise<MovieSchema> {
     return this.moviesService.create(createMovieDto);
   }
@@ -65,7 +80,27 @@ export class MoviesController {
    */
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<MovieSchema> {
+  @ApiOperation({
+    summary: 'Find a movie by ID',
+    description: 'Retrieves a movie by its unique identifier',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The movie has been successfully retrieved.',
+    type: MovieApiSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'The movie with the specified ID was not found.',
+  })
+  @ApiParam({
+    name: 'id',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  async findById(
+    @Param('id', ParseUUIDPipe)
+    id: string,
+  ): Promise<MovieSchema> {
     return this.moviesService.findById(id);
   }
 }

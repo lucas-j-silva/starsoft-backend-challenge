@@ -25,6 +25,10 @@ import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
 import { SeatSchema } from '../schemas';
 import { ListSeatsWithPaginationQueryDto } from './dtos/list-seats-with-pagination.dto';
 import { CreateSeatBodyDto } from './dtos';
+import { ApiOperation, ApiParam } from '@nestjs/swagger';
+import { SeatApiSchema } from '../swagger/schemas';
+import { ApiResponse } from '@nestjs/swagger';
+import { SeatsPaginationResultApiSchema } from '../swagger/schemas/seats-pagination-result-api.schema';
 
 /**
  * Controller for seat-related operations within a room.
@@ -75,6 +79,19 @@ export class SeatsController {
    */
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'List seats with pagination',
+    description: 'Retrieves a paginated list of seats for the specified room',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The seats have been successfully retrieved.',
+    type: SeatsPaginationResultApiSchema,
+  })
+  @ApiParam({
+    name: 'roomId',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
   async listWithPagination(
     @Param('roomId', ParseUUIDPipe) roomId: string,
     @Query() query: ListSeatsWithPaginationQueryDto,
@@ -110,6 +127,28 @@ export class SeatsController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Create a new seat',
+    description:
+      'Creates a new seat with the specified row and column in the given room',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The seat has been successfully created.',
+    type: SeatApiSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'The seat cannot be created.',
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'The seat already exists.',
+  })
+  @ApiParam({
+    name: 'roomId',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
   async create(
     @Param('roomId', ParseUUIDPipe) roomId: string,
     @Body() body: CreateSeatBodyDto,

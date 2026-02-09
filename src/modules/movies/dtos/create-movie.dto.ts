@@ -1,3 +1,4 @@
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 /**
@@ -12,6 +13,10 @@ import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
  *   description: 'A mind-bending thriller about dream infiltration'
  * });
  */
+@ApiSchema({
+  name: 'CreateMovieDto',
+  description: 'Data Transfer Object for creating a new movie',
+})
 export class CreateMovieDto {
   /**
    * The name of the movie.
@@ -23,6 +28,11 @@ export class CreateMovieDto {
    * @example
    * 'Inception'
    */
+  @ApiProperty({
+    description: 'The name of the movie',
+    example: 'Inception',
+    maxLength: 128,
+  })
   @IsString()
   @IsNotEmpty()
   @MaxLength(128)
@@ -38,6 +48,11 @@ export class CreateMovieDto {
    * @example
    * 'A mind-bending thriller about dream infiltration'
    */
+  @ApiProperty({
+    description: 'The description of the movie',
+    example: 'A mind-bending thriller about dream infiltration',
+    maxLength: 255,
+  })
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)

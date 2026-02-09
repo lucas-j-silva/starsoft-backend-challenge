@@ -8,6 +8,7 @@
  * @module create-room.dto
  */
 
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { IsNotEmpty, MaxLength, IsString } from 'class-validator';
 
 /**
@@ -21,6 +22,10 @@ import { IsNotEmpty, MaxLength, IsString } from 'class-validator';
  * // Creating a new room DTO
  * const createRoomDto = new CreateRoomDto({ name: 'IMAX Theater' });
  */
+@ApiSchema({
+  name: 'CreateRoomDto',
+  description: 'Data Transfer Object for creating a new room',
+})
 export class CreateRoomDto {
   /**
    * Display name for the room.
@@ -29,6 +34,11 @@ export class CreateRoomDto {
    * @description Must be a non-empty string with a maximum length of 128 characters.
    * @example "Room 1", "IMAX Theater", "VIP Room"
    */
+  @ApiProperty({
+    description: 'The name of the room',
+    example: 'IMAX Theater',
+    maxLength: 128,
+  })
   @IsString()
   @IsNotEmpty()
   @MaxLength(128)

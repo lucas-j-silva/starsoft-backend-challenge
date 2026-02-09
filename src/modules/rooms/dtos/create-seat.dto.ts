@@ -9,6 +9,7 @@
  * @module create-seat.dto
  */
 
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsNumber,
@@ -34,6 +35,10 @@ import {
  *   column: 12,
  * });
  */
+@ApiSchema({
+  name: 'CreateSeatDto',
+  description: 'Data Transfer Object for creating a new seat',
+})
 export class CreateSeatDto {
   /**
    * The unique identifier of the room where the seat will be created.
@@ -42,6 +47,11 @@ export class CreateSeatDto {
    * @memberof CreateSeatDto
    * @example '550e8400-e29b-41d4-a716-446655440000'
    */
+  @ApiProperty({
+    description:
+      'The unique identifier of the room where the seat will be created',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
   @IsString()
   @IsNotEmpty()
   @IsUUID()
@@ -54,6 +64,10 @@ export class CreateSeatDto {
    * @memberof CreateSeatDto
    * @example 'A' - represents row A (e.g., A1, A2, A12)
    */
+  @ApiProperty({
+    description: 'The row identifier for the seat (typically a letter)',
+    example: 'A',
+  })
   @IsString()
   @IsNotEmpty()
   row: string;
@@ -65,6 +79,10 @@ export class CreateSeatDto {
    * @memberof CreateSeatDto
    * @example 12 - combined with row 'A' gives seat 'A12'
    */
+  @ApiProperty({
+    description: 'The column number for the seat within the row',
+    example: 12,
+  })
   @IsNumber()
   @IsNotEmpty()
   @IsPositive()
