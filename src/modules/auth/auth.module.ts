@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { AuthModule as BetterAuthModule } from '@thallesp/nestjs-better-auth';
 import { BetterAuth } from 'src/shared/auth/better-auth';
 import { DatabaseModule } from 'src/shared/database/database.module';
-import { DrizzleClientService } from 'src/shared/database/drizzle-client.service';
+import {
+  DatabaseClient,
+  DB_PROVIDER,
+} from 'src/shared/database/database.provider';
 
 /**
  * Authentication module that integrates Better Auth with NestJS.
@@ -39,13 +42,13 @@ import { DrizzleClientService } from 'src/shared/database/drizzle-client.service
        * @param drizzleClient - The Drizzle ORM client service
        * @returns Configuration object containing the Better Auth instance
        */
-      useFactory: (drizzleClient: DrizzleClientService) => {
+      useFactory: (client: DatabaseClient) => {
         return {
-          auth: BetterAuth(drizzleClient),
+          auth: BetterAuth(client),
         };
       },
       /** Inject DrizzleClientService into the factory function */
-      inject: [DrizzleClientService],
+      inject: [DB_PROVIDER],
     }),
   ],
 })

@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { DrizzleClientService } from 'src/shared/database/drizzle-client.service';
 import { MovieInsertSchema, MovieSchema, moviesTable } from '../schemas';
 import { eq } from 'drizzle-orm';
 import { MovieNotFoundException } from '../exceptions';
 import { UnableToCreateMovieException } from '../exceptions/unable-to-create-movie.exception';
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
 
 /**
  * Repository class for managing movie data persistence operations.
@@ -29,7 +30,9 @@ export class MoviesRepository {
    *
    * @param {DrizzleClientService} drizzleClient - The Drizzle ORM client service for database operations.
    */
-  constructor(private readonly drizzleClient: DrizzleClientService) {}
+  constructor(
+    private readonly txHost: TransactionHost<DatabaseTransactionAdapter>,
+  ) {}
 
   /**
    * Finds a movie by its unique identifier.
@@ -44,12 +47,10 @@ export class MoviesRepository {
    * console.log(movie.name); // 'Movie Title'
    */
   async findById(id: string): Promise<MovieSchema> {
-    const movie = await this.drizzleClient
-      .getInstance()
+    const [movie] = await this.txHost.tx
       .select()
       .from(moviesTable)
-      .where(eq(moviesTable.id, id))
-      .then((results) => results[0]);
+      .where(eq(moviesTable.id, id));
 
     if (!movie) throw new MovieNotFoundException(id);
 
@@ -72,12 +73,10 @@ export class MoviesRepository {
    * console.log(newMovie.id); // '550e8400-e29b-41d4-a716-446655440000'
    */
   async insert(data: MovieInsertSchema): Promise<MovieSchema> {
-    const movie = await this.drizzleClient
-      .getInstance()
+    const [movie] = await this.txHost.tx
       .insert(moviesTable)
       .values(data)
-      .returning()
-      .then((results) => results[0]);
+      .returning();
 
     if (!movie) throw new UnableToCreateMovieException();
 

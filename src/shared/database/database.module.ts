@@ -1,9 +1,9 @@
-import { DrizzleClientService } from './drizzle-client.service';
 import { Module } from '@nestjs/common';
+import { DRIZZLE_PROVIDER } from './database.provider';
 
 @Module({
   imports: [],
-  providers: [DrizzleClientService],
-  exports: [DrizzleClientService],
+  providers: [DRIZZLE_PROVIDER],
+  exports: [DRIZZLE_PROVIDER],
 })
 export class DatabaseModule {}

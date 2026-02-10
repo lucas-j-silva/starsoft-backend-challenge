@@ -6,7 +6,6 @@
  *
  */
 
-import { DrizzleClientService } from 'src/shared/database/drizzle-client.service';
 import { RoomInsertSchema, RoomSchema, roomsTable } from '../schemas';
 import { Injectable } from '@nestjs/common';
 import { UnableToCreateRoomException } from '../exceptions';
@@ -14,6 +13,8 @@ import { eq } from 'drizzle-orm';
 import { RoomNotFoundException } from '../exceptions/room-not-found.exception';
 import { PaginationDto } from 'src/shared/dtos/pagination.dto';
 import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
 
 /**
  * Repository class for managing room data persistence operations.
@@ -32,7 +33,9 @@ import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
  */
 @Injectable()
 export class RoomsRepository {
-  constructor(private readonly drizzleClient: DrizzleClientService) {}
+  constructor(
+    private readonly txHost: TransactionHost<DatabaseTransactionAdapter>,
+  ) {}
 
   /**
    * Finds a room by its unique identifier.
@@ -47,12 +50,10 @@ export class RoomsRepository {
    * console.log(room.name); // 'Room 1'
    */
   async findById(id: string): Promise<RoomSchema> {
-    const room = await this.drizzleClient
-      .getInstance()
+    const [room] = await this.txHost.tx
       .select()
       .from(roomsTable)
-      .where(eq(roomsTable.id, id))
-      .then((results) => results[0]);
+      .where(eq(roomsTable.id, id));
 
     if (!room) throw new RoomNotFoundException(id);
 
@@ -86,11 +87,10 @@ export class RoomsRepository {
     const limit = pagination.limit ?? 10;
     const offset = (page - 1) * limit;
 
-    const count = await this.drizzleClient.getInstance().$count(roomsTable);
+    const count = await this.txHost.tx.$count(roomsTable);
     const totalPages = Math.ceil(count / limit);
 
-    const rooms = await this.drizzleClient
-      .getInstance()
+    const rooms = await this.txHost.tx
       .select()
       .from(roomsTable)
       .limit(limit)
@@ -116,12 +116,10 @@ export class RoomsRepository {
    * @throws {UnableToCreateRoomException} When the room cannot be created in the database.
    */
   async insert(data: RoomInsertSchema): Promise<RoomSchema> {
-    const room = await this.drizzleClient
-      .getInstance()
+    const [room] = await this.txHost.tx
       .insert(roomsTable)
       .values(data)
-      .returning()
-      .then((results) => results[0]);
+      .returning();
 
     if (!room) throw new UnableToCreateRoomException();
 

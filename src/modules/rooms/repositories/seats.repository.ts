@@ -1,4 +1,3 @@
-import { DrizzleClientService } from 'src/shared/database/drizzle-client.service';
 import { Injectable } from '@nestjs/common';
 import { SeatInsertSchema, SeatSchema, seatsTable } from '../schemas';
 import { UnableToCreateSeatException } from '../exceptions/unable-to-create-seat.exception';
@@ -6,10 +5,14 @@ import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
 import { PaginationDto } from 'src/shared/dtos/pagination.dto';
 import { and, eq } from 'drizzle-orm';
 import { SeatNotFoundException } from '../exceptions/seat-not-found.exception';
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
 
 @Injectable()
 export class SeatsRepository {
-  constructor(private readonly drizzleClient: DrizzleClientService) {}
+  constructor(
+    private readonly txHost: TransactionHost<DatabaseTransactionAdapter>,
+  ) {}
 
   async listWithPagination(
     roomId: string,
@@ -19,11 +22,10 @@ export class SeatsRepository {
     const limit = pagination.limit ?? 10;
     const offset = (page - 1) * limit;
 
-    const count = await this.drizzleClient.getInstance().$count(seatsTable);
+    const count = await this.txHost.tx.$count(seatsTable);
     const totalPages = Math.ceil(count / limit);
 
-    const seats = await this.drizzleClient
-      .getInstance()
+    const seats = await this.txHost.tx
       .select()
       .from(seatsTable)
       .limit(limit)
@@ -41,8 +43,7 @@ export class SeatsRepository {
   }
 
   async listAll(roomId: string): Promise<SeatSchema[]> {
-    const seats = await this.drizzleClient
-      .getInstance()
+    const seats = await this.txHost.tx
       .select()
       .from(seatsTable)
       .where(eq(seatsTable.roomId, roomId));
@@ -51,12 +52,10 @@ export class SeatsRepository {
   }
 
   async insert(data: SeatInsertSchema): Promise<SeatSchema> {
-    const seat = await this.drizzleClient
-      .getInstance()
+    const [seat] = await this.txHost.tx
       .insert(seatsTable)
       .values(data)
-      .returning()
-      .then((results) => results[0]);
+      .returning();
 
     if (!seat) throw new UnableToCreateSeatException();
 
@@ -68,8 +67,7 @@ export class SeatsRepository {
     row: string,
     column: number,
   ): Promise<SeatSchema | null> {
-    const seat = await this.drizzleClient
-      .getInstance()
+    const [seat] = await this.txHost.tx
       .select()
       .from(seatsTable)
       .where(
@@ -79,8 +77,7 @@ export class SeatsRepository {
           eq(seatsTable.column, column),
         ),
       )
-      .limit(1)
-      .then((results) => results[0]);
+      .limit(1);
 
     if (!seat) throw new SeatNotFoundException();
 
