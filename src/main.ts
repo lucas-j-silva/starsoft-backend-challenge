@@ -34,6 +34,11 @@ async function bootstrap() {
   );
 
   await app.listen(process.env.PORT ?? 3333);
+
+  console.log(`Server is running on port ${process.env.PORT ?? 3333}`);
+  console.log(
+    `Docs are running on port http://localhost:${process.env.PORT ?? 3333}/docs`,
+  );
 }
 
 bootstrap();
