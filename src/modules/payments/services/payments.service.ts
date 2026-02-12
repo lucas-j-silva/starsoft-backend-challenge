@@ -1,0 +1,43 @@
+import { Injectable } from '@nestjs/common';
+import {
+  ApprovePaymentDto,
+  CreatePaymentDto,
+  ListPaymentsWithPaginationAndFilterDto,
+} from '../dtos';
+import { CreatePaymentUseCase } from '../use-cases/create-payment.use-case';
+import { PaymentSchema } from '../schemas';
+import { HandleReservationCreatedUseCase } from '../use-cases/handle-reservation-created.use-case';
+import { ListPaymentsWithPaginationAndFilterUseCase } from '../use-cases/list-payments-with-pagination-and-filter.use-case';
+import { ReservationCreatedMessage } from 'src/modules/sessions/seats/events/messages';
+import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { ApprovePaymentUseCase } from '../use-cases/approve-payment.use-case';
+
+@Injectable()
+export class PaymentsService {
+  constructor(
+    private readonly createPaymentUseCase: CreatePaymentUseCase,
+    private readonly handleReservationCreatedUseCase: HandleReservationCreatedUseCase,
+    private readonly listPaymentsWithPaginationAndFilterUseCase: ListPaymentsWithPaginationAndFilterUseCase,
+    private readonly approvePaymentUseCase: ApprovePaymentUseCase,
+  ) {}
+
+  async create(data: CreatePaymentDto): Promise<PaymentSchema> {
+    return this.createPaymentUseCase.execute(data);
+  }
+
+  async handleReservationCreated(
+    payload: ReservationCreatedMessage,
+  ): Promise<void> {
+    return this.handleReservationCreatedUseCase.execute(payload);
+  }
+
+  async listWithPaginationAndFilter(
+    data: ListPaymentsWithPaginationAndFilterDto,
+  ): Promise<PaginationResultDto<PaymentSchema>> {
+    return this.listPaymentsWithPaginationAndFilterUseCase.execute(data);
+  }
+
+  async approvePayment(data: ApprovePaymentDto): Promise<void> {
+    return this.approvePaymentUseCase.execute(data);
+  }
+}
