@@ -4,9 +4,7 @@ export class PaymentNotFoundException extends NotFoundException {
   private readonly logger = new Logger(PaymentNotFoundException.name);
 
   constructor(id?: string) {
-    const message = id
-      ? `Payment with id or external id ${id} not found`
-      : 'Payment not found';
+    const message = id ? 'payments.NOT_FOUND_WITH_ID' : 'payments.NOT_FOUND';
 
     super(message);
 

@@ -4,7 +4,7 @@ export class UnableToApprovePaymentException extends BadRequestException {
   private readonly logger = new Logger(UnableToApprovePaymentException.name);
 
   constructor(customMessage?: string) {
-    const message = customMessage ?? 'Unable to approve payment';
+    const message = customMessage ?? 'payments.UNABLE_TO_APPROVE_PAYMENT';
 
     super(message);
 

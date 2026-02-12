@@ -22,7 +22,7 @@ export class UnableToCreateMovieException extends BadRequestException {
    * Creates a new UnableToCreateMovieException instance.
    */
   constructor() {
-    const message = 'Unable to create movie';
+    const message = 'movies.UNABLE_TO_CREATE_MOVIE';
 
     super(message);
 

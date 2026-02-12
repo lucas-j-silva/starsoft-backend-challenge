@@ -1,0 +1,5 @@
+{
+  "NOT_FOUND": "Movie not found",
+  "NOT_FOUND_WITH_ID": "Movie with the ID {id} was not found",
+  "UNABLE_TO_CREATE_MOVIE": "Unable to create movie"
+}

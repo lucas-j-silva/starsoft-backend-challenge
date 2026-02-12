@@ -1,15 +1,22 @@
-import { NotFoundException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
-export class SessionSeatReservationNotFoundException extends NotFoundException {
+export class SessionSeatReservationNotFoundException extends CustomException {
   private readonly logger = new Logger(
     SessionSeatReservationNotFoundException.name,
   );
 
-  constructor(customMessage?: string) {
-    const message = customMessage ?? 'Session seat reservation not found';
+  constructor(id?: string) {
+    const message = id
+      ? 'sessions.SESSION_SEAT_RESERVATION_NOT_FOUND_WITH_ID'
+      : 'sessions.SESSION_SEAT_RESERVATION_NOT_FOUND';
 
-    super(message);
+    super(message, 404, { id });
 
-    this.logger.warn(message);
+    this.logger.warn(
+      id
+        ? 'Session seat reservation not found with id: ' + id
+        : 'Session seat reservation not found',
+    );
   }
 }

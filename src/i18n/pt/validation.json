@@ -1,0 +1,16 @@
+{
+  "IS_NOT_EMPTY": "{property} não pode estar vazio",
+  "INVALID_EMAIL": "{property} é um e-mail inválido",
+  "INVALID_BOOLEAN": "{property} não é um booleano",
+  "INVALID_STRING": "{property} não é uma string",
+  "MIN": "{property} não atende ao valor mínimo",
+  "MAX": "{property} não atende ao valor máximo",
+  "INVALID_UUID": "{property} não é um UUID válido",
+  "IS_INT": "{property} não é um número",
+  "IS_POSITIVE": "{property} não é um número positivo",
+  "INVALID_DATE": "{property} não é uma data válida",
+  "MAX_LENGTH": "{property} não atende ao comprimento máximo",
+  "INVALID_ENUM": "{property} não é um enum válido",
+  "IS_NOT_EMPTY_OBJECT": "{property} não pode estar vazio",
+  "INVALID_ARRAY": "{property} não é um array válido"  
+}

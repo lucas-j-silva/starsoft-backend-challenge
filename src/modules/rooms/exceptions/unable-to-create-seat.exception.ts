@@ -9,18 +9,19 @@
  * @module unable-to-create-seat.exception
  */
 
-import { BadRequestException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when a seat cannot be created.
  *
  * @description
- * This exception extends NestJS's BadRequestException and is used to indicate
+ * This exception extends CustomException and is used to indicate
  * that a seat creation operation has failed. It automatically logs a warning
  * message when instantiated.
  *
  * @class UnableToCreateSeatException
- * @extends {BadRequestException}
+ * @extends {CustomException}
  *
  * @example
  * // Throwing the exception when seat creation fails
@@ -28,7 +29,7 @@ import { BadRequestException, Logger } from '@nestjs/common';
  *   throw new UnableToCreateSeatException();
  * }
  */
-export class UnableToCreateSeatException extends BadRequestException {
+export class UnableToCreateSeatException extends CustomException {
   /**
    * Logger instance for this exception class.
    * @private
@@ -47,9 +48,9 @@ export class UnableToCreateSeatException extends BadRequestException {
    * throw new UnableToCreateSeatException();
    */
   constructor() {
-    const message = 'Unable to create seat';
+    const message = 'rooms.UNABLE_TO_CREATE_SEAT';
 
-    super(message);
+    super(message, 400);
 
     this.logger.warn(message);
   }

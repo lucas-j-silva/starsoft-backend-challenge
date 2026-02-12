@@ -19,6 +19,7 @@ services:
       - BETTER_AUTH_SECRET=secret
       - REDIS_URL=redis://redis:6379
       - KAFKA_BROKERS=kafka:9093
+      - FALLBACK_LANGUAGE=en
     networks:
       - backend-challenge-network
     depends_on:

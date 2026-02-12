@@ -7,19 +7,19 @@
  * @module unable-to-create-session.exception
  */
 
-import { BadRequestException } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 import { Logger } from '@nestjs/common';
 
 /**
  * Exception thrown when a session cannot be created.
  *
- * @extends {BadRequestException}
+ * @extends {CustomException}
  *
  * @example
  * // Throw when unable to create session
  * throw new UnableToCreateSessionException();
  */
-export class UnableToCreateSessionException extends BadRequestException {
+export class UnableToCreateSessionException extends CustomException {
   /**
    * Logger instance for recording warning messages when the exception is thrown.
    * @private
@@ -35,9 +35,9 @@ export class UnableToCreateSessionException extends BadRequestException {
    * logs a warning to help with debugging and monitoring.
    */
   constructor() {
-    const message = 'Unable to create session';
+    const message = 'sessions.UNABLE_TO_CREATE_SESSION';
 
-    super(message);
+    super(message, 400);
 
     this.logger.warn(message);
   }

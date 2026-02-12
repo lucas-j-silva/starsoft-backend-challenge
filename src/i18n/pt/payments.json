@@ -1,0 +1,6 @@
+{
+  "UNABLE_TO_CREATE_PAYMENT": "Não foi possível criar o pagamento",
+  "UNABLE_TO_APPROVE_PAYMENT": "Não foi possível aprovar o pagamento",
+  "NOT_FOUND": "Pagamento não encontrado",
+  "NOT_FOUND_WITH_ID": "Pagamento com o ID ou ID externo especificado não foi encontrado"
+}

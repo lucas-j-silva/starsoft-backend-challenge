@@ -36,10 +36,10 @@ export class PaginationDto {
    * Must be an integer between 1 and 100 (inclusive).
    * @example 10
    */
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  @Max(100)
+  @IsOptional({ message: 'validation.IS_OPTIONAL' })
+  @IsInt({ message: 'validation.IS_INT' })
+  @Min(1, { message: 'validation.MIN' })
+  @Max(100, { message: 'validation.MAX' })
   limit?: number;
 
   /**
@@ -50,8 +50,8 @@ export class PaginationDto {
    * Must be a non-empty integer with a minimum value of 1.
    * @example 1
    */
-  @IsInt()
-  @IsNotEmpty()
-  @Min(1)
+  @IsInt({ message: 'validation.IS_INT' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @Min(1, { message: 'validation.MIN' })
   page: number;
 }

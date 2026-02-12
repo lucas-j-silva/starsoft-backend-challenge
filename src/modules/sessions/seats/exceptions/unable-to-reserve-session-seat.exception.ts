@@ -6,7 +6,7 @@ export class UnableToReserveSessionSeatException extends ServiceUnavailableExcep
   );
 
   constructor(customMessage?: string) {
-    const message = customMessage ?? 'Unable to reserve session seat';
+    const message = customMessage ?? 'sessions.UNABLE_TO_RESERVE_SESSION_SEAT';
 
     super(message);
 

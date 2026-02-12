@@ -10,13 +10,7 @@
  */
 
 import { PickType } from '@nestjs/swagger';
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsUUID,
-} from 'class-validator';
+import { IsDate, IsInt, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
 
 /**
  * Data Transfer Object for updating an existing cinema session.
@@ -51,8 +45,8 @@ export class UpdateSessionDto {
    * @required
    * @description Must be a valid UUID format.
    */
-  @IsNotEmpty()
-  @IsUUID()
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
   id: string;
 
   /**
@@ -65,7 +59,7 @@ export class UpdateSessionDto {
    * @example 2500 // Represents $25.00
    */
   @IsOptional()
-  @IsNumber()
+  @IsInt({ message: 'validation.IS_INT' })
   valuePerSeatInCents?: number;
 
   /**
@@ -77,7 +71,7 @@ export class UpdateSessionDto {
    * @description The date and time when the cinema session begins.
    */
   @IsOptional()
-  @IsDate()
+  @IsDate({ message: 'validation.INVALID_DATE' })
   startTime?: Date;
 
   /**

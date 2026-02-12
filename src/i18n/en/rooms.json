@@ -1,0 +1,9 @@
+{
+  "NOT_FOUND": "Room not found",
+  "NOT_FOUND_WITH_ID": "Room with the ID {id} was not found",
+  "SEAT_ALREADY_EXISTS": "Seat already exists",
+  "UNABLE_TO_CREATE_ROOM": "Unable to create room",
+  "SEAT_NOT_FOUND": "Seat not found",
+  "SEAT_NOT_FOUND_WITH_ID": "Seat with the ID {id} was not found",
+  "UNABLE_TO_CREATE_SEAT": "Unable to create seat"
+}

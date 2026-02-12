@@ -29,7 +29,7 @@ export class SeatAlreadyExistsException extends ConflictException {
    * Creates an instance of SeatAlreadyExistsException.
    */
   constructor() {
-    const message = 'Seat already exists';
+    const message = 'rooms.SEAT_ALREADY_EXISTS';
 
     super(message);
 

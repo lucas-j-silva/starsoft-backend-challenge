@@ -8,13 +8,13 @@
  * @module session-seat-not-found.exception
  */
 
-import { NotFoundException } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when a session seat cannot be found in the database.
  *
- * @extends {NotFoundException}
+ * @extends {CustomException}
  *
  * @example
  * throw new SessionSeatNotFoundException('550e8400-e29b-41d4-a716-446655440000');
@@ -24,7 +24,7 @@ import { Logger } from '@nestjs/common';
  * throw new SessionSeatNotFoundException();
  * // Logs: "Session seat not found"
  */
-export class SessionSeatNotFoundException extends NotFoundException {
+export class SessionSeatNotFoundException extends CustomException {
   /**
    * Logger instance for recording warning messages when the exception is thrown.
    * @private
@@ -41,11 +41,13 @@ export class SessionSeatNotFoundException extends NotFoundException {
    */
   constructor(id?: string) {
     const message = id
-      ? `Session seat with id ${id} not found`
-      : 'Session seat not found';
+      ? 'sessions.SESSION_SEAT_NOT_FOUND_WITH_ID'
+      : 'sessions.SESSION_SEAT_NOT_FOUND';
 
-    super(message);
+    super(message, 404, { id });
 
-    this.logger.warn(message);
+    this.logger.warn(
+      id ? 'Session seat not found with id: ' + id : 'Session seat not found',
+    );
   }
 }

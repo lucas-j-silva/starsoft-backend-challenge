@@ -1,0 +1,16 @@
+{
+  "IS_NOT_EMPTY": "{property} cannot be empty",
+  "INVALID_EMAIL": "property is an invalid email",
+  "INVALID_BOOLEAN": "{property} is not a boolean",
+  "INVALID_STRING": "{property} is not a string",
+  "MIN": "{property} does not meet the minimum value",
+  "MAX": "{property} does not meet the maximum value",
+  "INVALID_UUID": "{property} is not a valid UUID",
+  "IS_INT": "{property} is not a number",
+  "IS_POSITIVE": "{property} is not a positive number",
+  "INVALID_DATE": "{property} is not a valid date",
+  "MAX_LENGTH": "{property} does not meet the maximum length",
+  "INVALID_ENUM": "{property} is not a valid enum",
+  "IS_NOT_EMPTY_OBJECT": "{property} cannot be empty",
+  "INVALID_ARRAY": "{property} is not a valid array"  
+}

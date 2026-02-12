@@ -8,14 +8,15 @@
  * @module room-not-found.exception
  */
 
-import { Logger, NotFoundException } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when a room cannot be found in the database.
- * Extends NestJS NotFoundException to provide HTTP 404 responses.
+ * Extends CustomException to provide HTTP 404 responses.
  *
  * @class RoomNotFoundException
- * @extends {NotFoundException}
+ * @extends {CustomException}
  *
  * @example
  * // With room ID
@@ -27,7 +28,7 @@ import { Logger, NotFoundException } from '@nestjs/common';
  * throw new RoomNotFoundException();
  * // Logs: "Room not found"
  */
-export class RoomNotFoundException extends NotFoundException {
+export class RoomNotFoundException extends CustomException {
   /**
    * Logger instance for logging warning messages when exception is thrown.
    * @private
@@ -41,10 +42,10 @@ export class RoomNotFoundException extends NotFoundException {
    * @param {string} [id] - Optional room ID that was not found.
    */
   constructor(id?: string) {
-    const message = id ? `Room with id ${id} not found` : 'Room not found';
+    const message = id ? 'rooms.NOT_FOUND_WITH_ID' : 'rooms.NOT_FOUND';
 
-    super(message);
+    super(message, 404, { id });
 
-    this.logger.warn(message);
+    this.logger.warn(id ? 'Room not found with id: ' + id : 'Room not found');
   }
 }

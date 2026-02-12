@@ -1,9 +1,10 @@
-import { BadRequestException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when a session seat is not available.
  *
- * @extends {BadRequestException}
+ * @extends {CustomException}
  *
  * @example
  * throw new SessionSeatNotAvailableException('550e8400-e29b-41d4-a716-446655440000');
@@ -13,7 +14,7 @@ import { BadRequestException, Logger } from '@nestjs/common';
  * throw new SessionSeatNotAvailableException();
  * // Logs: "Session seat not available"
  */
-export class SessionSeatNotAvailableException extends BadRequestException {
+export class SessionSeatNotAvailableException extends CustomException {
   /**
    * Logger instance for this exception class.
    * @private
@@ -29,10 +30,14 @@ export class SessionSeatNotAvailableException extends BadRequestException {
    */
   constructor(id?: string) {
     const message = id
-      ? `Session seat with id ${id} not available`
-      : 'Session seat not available';
+      ? 'sessions.SESSION_SEAT_NOT_AVAILABLE_WITH_ID'
+      : 'sessions.SESSION_SEAT_NOT_AVAILABLE';
 
-    super(message);
-    this.logger.warn(message);
+    super(message, 400, { id });
+    this.logger.warn(
+      id
+        ? 'Session seat not available with id: ' + id
+        : 'Session seat not available',
+    );
   }
 }

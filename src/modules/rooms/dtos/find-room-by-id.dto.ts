@@ -29,8 +29,8 @@ export class FindRoomByIdDto {
    * @description Must be a valid UUID v4 string format.
    * @example '550e8400-e29b-41d4-a716-446655440000'
    */
-  @IsString()
-  @IsNotEmpty()
-  @IsUUID()
+  @IsString({ message: 'validation.INVALID_STRING' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
   id: string;
 }

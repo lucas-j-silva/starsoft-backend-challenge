@@ -4,12 +4,12 @@ import { PaymentStatus } from '../enums/payment-status.enum';
 import { PickType } from '@nestjs/swagger';
 
 export class ListPaymentsWithPaginationAndFilterDto extends PaginationDto {
-  @IsNotEmpty()
-  @IsUUID()
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
   userId: string;
 
-  @IsOptional()
-  @IsEnum(PaymentStatus)
+  @IsOptional({ message: 'validation.IS_OPTIONAL' })
+  @IsEnum(PaymentStatus, { message: 'validation.INVALID_ENUM' })
   status?: PaymentStatus;
 
   constructor(data: Partial<ListPaymentsWithPaginationAndFilterDto>) {

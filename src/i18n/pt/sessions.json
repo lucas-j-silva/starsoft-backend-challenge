@@ -1,0 +1,19 @@
+{
+  "NOT_ENOUGH_SEATS": "A sala selecionada não possui assentos suficientes",
+  "NOT_FOUND": "Sessão não encontrada",
+  "NOT_FOUND_WITH_ID": "Sessão com o ID {id} não foi encontrada",
+  "UNABLE_TO_CREATE_SESSION": "Não foi possível criar a sessão",
+  "UNABLE_TO_UPDATE_SESSION": "Não foi possível atualizar a sessão",
+  "SESSION_SEAT_ALREADY_RESERVED": "Assento da sessão já reservado",
+  "SESSION_SEAT_ALREADY_RESERVED_WITH_EXPIRES_AT": "Assento da sessão já reservado até {expiresAt}",
+  "SESSION_SEAT_NOT_AVAILABLE": "Assento da sessão não disponível",
+  "SESSION_SEAT_NOT_AVAILABLE_WITH_ID": "Assento da sessão com o ID {id} não estava disponível",
+  "SESSION_SEAT_NOT_FOUND": "Assento da sessão não encontrado",
+  "SESSION_SEAT_NOT_FOUND_WITH_ID": "Assento da sessão com o ID {id} não foi encontrado",
+  "SESSION_SEAT_RESERVATION_NOT_FOUND": "Reserva de assento da sessão não encontrada",
+  "UNABLE_TO_CREATE_BULK_SESSION_SEATS": "Não foi possível criar os assentos da sessão em massa",
+  "UNABLE_TO_CREATE_SESSION_SEAT_RESERVATION": "Não foi possível criar a reserva de assento da sessão",
+  "UNABLE_TO_CREATE_SESSION_SEAT": "Não foi possível criar o assento da sessão",
+  "UNABLE_TO_RESERVE_SESSION_SEAT": "Não foi possível reservar o assento da sessão",
+  "UNABLE_TO_UPDATE_SESSION_SEAT": "Não foi possível atualizar o assento da sessão"
+}

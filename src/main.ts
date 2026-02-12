@@ -1,10 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { KafkaOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { HttpExceptionFilter } from './shared/exceptions/http-exception.filter';
+import {
+  I18nService,
+  I18nValidationExceptionFilter,
+  I18nValidationPipe,
+} from 'nestjs-i18n';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -12,7 +17,9 @@ async function bootstrap() {
   });
 
   app.enableShutdownHooks();
+
   const configService = app.get(ConfigService);
+  const i18n = app.get<I18nService>(I18nService);
 
   const config = new DocumentBuilder()
     .setTitle('Starsoft Backend Challenge')
@@ -21,7 +28,6 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  // const OpenApiSpecification =
 
   app.use(
     '/docs',
@@ -29,16 +35,21 @@ async function bootstrap() {
       content: document,
     }),
   );
-  // SwaggerModule.setup('docs', app, documentFactory);
 
   app.useGlobalPipes(
-    new ValidationPipe({
+    new I18nValidationPipe({
       transform: true,
       transformOptions: { enableImplicitConversion: true },
     }),
   );
+  app.useGlobalFilters(
+    new I18nValidationExceptionFilter({
+      detailedErrors: false,
+    }),
+    new HttpExceptionFilter(i18n),
+  );
 
-  const consumerApp = app.connectMicroservice<KafkaOptions>({
+  app.connectMicroservice<KafkaOptions>({
     transport: Transport.KAFKA,
     options: {
       client: {

@@ -35,8 +35,8 @@ export class ListSeatsDto {
    * @example
    * '550e8400-e29b-41d4-a716-446655440000'
    */
-  @IsNotEmpty()
-  @IsUUID()
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
   roomId: string;
 
   /**

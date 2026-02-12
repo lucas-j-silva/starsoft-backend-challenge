@@ -1,0 +1,9 @@
+{
+  "NOT_FOUND": "Sala não encontrada",
+  "NOT_FOUND_WITH_ID": "Sala com o ID {id} não foi encontrada",
+  "SEAT_ALREADY_EXISTS": "Assento já existe",
+  "UNABLE_TO_CREATE_ROOM": "Não foi possível criar a sala",
+  "SEAT_NOT_FOUND": "Assento não encontrado",
+  "SEAT_NOT_FOUND_WITH_ID": "Assento com o ID {id} não foi encontrado",
+  "UNABLE_TO_CREATE_SEAT": "Não foi possível criar o assento"
+}

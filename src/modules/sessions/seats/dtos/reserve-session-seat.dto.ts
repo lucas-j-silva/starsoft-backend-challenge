@@ -34,8 +34,8 @@ export class ReserveSessionSeatDto {
    * @memberof ReserveSessionSeatDto
    * @example '550e8400-e29b-41d4-a716-446655440000'
    */
-  @IsUUID()
-  @IsNotEmpty()
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
   sessionSeatId: string;
 
   /**
@@ -45,8 +45,8 @@ export class ReserveSessionSeatDto {
    * @memberof ReserveSessionSeatDto
    * @example '550e8400-e29b-41d4-a716-446655440000'
    */
-  @IsUUID()
-  @IsNotEmpty()
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
   userId: string;
 
   /**
@@ -56,8 +56,8 @@ export class ReserveSessionSeatDto {
    * @memberof ReserveSessionSeatDto
    * @example '550e8400-e29b-41d4-a716-446655440000'
    */
-  @IsUUID()
-  @IsNotEmpty()
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
   sessionId: string;
 
   /**

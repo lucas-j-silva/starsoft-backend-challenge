@@ -1,10 +1,11 @@
-import { Logger, NotFoundException } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Custom exception thrown when a movie cannot be found in the database.
- * Extends NestJS's NotFoundException to provide HTTP 404 responses.
+ * Extends CustomException to provide HTTP 404 responses.
  *
- * @extends {NotFoundException}
+ * @extends {CustomException}
  *
  * @example
  * // Throw with a specific movie ID
@@ -14,7 +15,7 @@ import { Logger, NotFoundException } from '@nestjs/common';
  * // Throw without an ID
  * throw new MovieNotFoundException();
  */
-export class MovieNotFoundException extends NotFoundException {
+export class MovieNotFoundException extends CustomException {
   /**
    * Logger instance for recording warning messages when the exception is thrown.
    * @private
@@ -30,10 +31,10 @@ export class MovieNotFoundException extends NotFoundException {
    *                        If omitted, a generic "Movie not found" message is used.
    */
   constructor(id?: string) {
-    const message = id ? `Movie with id ${id} not found` : 'Movie not found';
+    const message = id ? 'movies.NOT_FOUND_WITH_ID' : 'movies.NOT_FOUND';
 
-    super(message);
+    super(message, 404, { id });
 
-    this.logger.warn(message);
+    this.logger.warn(id ? 'Movie not found with id: ' + id : 'Movie not found');
   }
 }

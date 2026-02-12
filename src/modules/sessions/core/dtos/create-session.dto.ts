@@ -10,12 +10,12 @@
  */
 
 import {
-  IsNumber,
   IsNotEmpty,
   IsUUID,
   IsDate,
   IsBoolean,
   IsOptional,
+  IsInt,
 } from 'class-validator';
 
 /**
@@ -43,8 +43,8 @@ export class CreateSessionDto {
    *
    * @type {string}
    */
-  @IsNotEmpty()
-  @IsUUID()
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
   movieId: string;
 
   /**
@@ -52,8 +52,8 @@ export class CreateSessionDto {
    *
    * @type {string}
    */
-  @IsNotEmpty()
-  @IsUUID()
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
   roomId: string;
 
   /**
@@ -61,8 +61,8 @@ export class CreateSessionDto {
    *
    * @type {number}
    */
-  @IsNotEmpty()
-  @IsNumber()
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsInt({ message: 'validation.IS_INT' })
   valuePerSeatInCents: number;
 
   /**
@@ -70,8 +70,8 @@ export class CreateSessionDto {
    *
    * @type {Date}
    */
-  @IsNotEmpty()
-  @IsDate()
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsDate({ message: 'validation.INVALID_DATE' })
   startTime: Date;
 
   /**
@@ -79,7 +79,7 @@ export class CreateSessionDto {
    *
    * @type {boolean}
    */
-  @IsOptional()
-  @IsBoolean()
+  @IsOptional({ message: 'validation.IS_OPTIONAL' })
+  @IsBoolean({ message: 'validation.INVALID_BOOLEAN' })
   copySeats?: boolean;
 }

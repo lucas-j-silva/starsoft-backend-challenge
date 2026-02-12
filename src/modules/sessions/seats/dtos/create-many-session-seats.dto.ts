@@ -46,8 +46,8 @@ export class CreateManySessionSeatsDto {
    * @example
    * sessionId: '550e8400-e29b-41d4-a716-446655440000'
    */
-  @IsUUID()
-  @IsNotEmpty()
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
   sessionId: string;
 
   /**
@@ -62,11 +62,11 @@ export class CreateManySessionSeatsDto {
    *   { seatId: 'seat-2', isAvailable: true },
    * ]
    */
-  @IsArray()
-  @IsNotEmpty()
+  @IsArray({ message: 'validation.INVALID_ARRAY' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
   @ValidateNested({ each: true })
   @Type(() => CreateSessionSeatDto)
-  @IsNotEmptyObject()
+  @IsNotEmptyObject(undefined, { message: 'validation.IS_NOT_EMPTY_OBJECT' })
   seats: CreateSessionSeatDto[];
 
   /**

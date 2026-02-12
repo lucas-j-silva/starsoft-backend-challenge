@@ -7,18 +7,19 @@
  * a session seat reservation record in the database.
  * @module unable-to-create-session-seat-reservation.exception
  */
-import { BadRequestException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when a session seat reservation cannot be created.
  *
- * @extends {BadRequestException}
+ * @extends {CustomException}
  *
  * @example
  * // Throw when unable to create session seat reservation
  * throw new UnableToCreateSessionSeatReservationException();
  */
-export class UnableToCreateSessionSeatReservationException extends BadRequestException {
+export class UnableToCreateSessionSeatReservationException extends CustomException {
   /**
    * Logger instance for this exception class.
    * @private
@@ -35,10 +36,10 @@ export class UnableToCreateSessionSeatReservationException extends BadRequestExc
    * Initializes the exception with a predefined error message and logs a warning.
    */
   constructor() {
-    const message = 'Unable to create session seat reservation';
+    const message = 'sessions.UNABLE_TO_CREATE_SESSION_SEAT_RESERVATION';
 
-    super(message);
+    super(message, 400);
 
-    this.logger.warn(message);
+    this.logger.warn('Unable to create session seat reservation');
   }
 }

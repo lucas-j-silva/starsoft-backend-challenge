@@ -8,16 +8,17 @@
  * @module session-seat-already-reserved.exception
  */
 
-import { ConflictException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when attempting to reserve a session seat that has already been reserved.
  *
- * This exception extends NestJS's `BadRequestException` and is used to indicate
+ * This exception extends CustomException and is used to indicate
  * that a seat reservation request cannot be fulfilled because the seat is already
  * held by another user in the reservation cache.
  *
- * @extends {ConflictException}
+ * @extends {CustomException}
  *
  * @example
  * // Throwing the exception when a seat is already reserved
@@ -26,7 +27,7 @@ import { ConflictException, Logger } from '@nestjs/common';
  *   throw new SessionSeatAlreadyReservedException();
  * }
  */
-export class SessionSeatAlreadyReservedException extends ConflictException {
+export class SessionSeatAlreadyReservedException extends CustomException {
   /**
    * Logger instance for logging warning messages when this exception is thrown.
    * @private
@@ -42,9 +43,15 @@ export class SessionSeatAlreadyReservedException extends ConflictException {
    */
   constructor(expiresAt?: Date) {
     const message = expiresAt
-      ? `Session seat already reserved until ${expiresAt.toISOString()}`
-      : 'Session seat already reserved';
-    super(message);
-    this.logger.warn(message);
+      ? 'sessions.SESSION_SEAT_ALREADY_RESERVED_WITH_EXPIRES_AT'
+      : 'sessions.SESSION_SEAT_ALREADY_RESERVED';
+
+    super(message, 409, { expiresAt: expiresAt?.toISOString() });
+
+    this.logger.warn(
+      expiresAt
+        ? `Session seat already reserved until ${expiresAt.toISOString()}`
+        : 'Session seat already reserved',
+    );
   }
 }

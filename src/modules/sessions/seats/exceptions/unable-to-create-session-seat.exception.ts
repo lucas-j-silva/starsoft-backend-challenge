@@ -9,7 +9,8 @@
  * @module unable-to-create-session-seat.exception
  */
 
-import { BadRequestException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when a session seat creation fails.
@@ -19,7 +20,7 @@ import { BadRequestException, Logger } from '@nestjs/common';
  * operation fails to return a valid session seat record. It logs a
  * warning message and returns a 400 Bad Request response to the client.
  *
- * @extends {BadRequestException}
+ * @extends {CustomException}
  *
  * @example
  * // Throwing the exception when session seat creation fails
@@ -27,7 +28,7 @@ import { BadRequestException, Logger } from '@nestjs/common';
  *   throw new UnableToCreateSessionSeatException();
  * }
  */
-export class UnableToCreateSessionSeatException extends BadRequestException {
+export class UnableToCreateSessionSeatException extends CustomException {
   /**
    * Logger instance for this exception class.
    *
@@ -41,14 +42,14 @@ export class UnableToCreateSessionSeatException extends BadRequestException {
    *
    * @description
    * Initializes the exception with a predefined error message,
-   * calls the parent BadRequestException constructor, and logs
+   * calls the parent CustomException constructor, and logs
    * a warning message for debugging purposes.
    */
   constructor() {
-    const message = 'Unable to create session seat';
+    const message = 'sessions.UNABLE_TO_CREATE_SESSION_SEAT';
 
-    super(message);
+    super(message, 400);
 
-    this.logger.warn(message);
+    this.logger.warn('Unable to create session seat');
   }
 }

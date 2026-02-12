@@ -33,9 +33,9 @@ export class CreateMovieDto {
     example: 'Inception',
     maxLength: 128,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(128)
+  @IsString({ message: 'validation.INVALID_STRING' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @MaxLength(128, { message: 'validation.MAX_LENGTH' })
   name: string;
 
   /**
@@ -53,9 +53,9 @@ export class CreateMovieDto {
     example: 'A mind-bending thriller about dream infiltration',
     maxLength: 255,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
+  @IsString({ message: 'validation.INVALID_STRING' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @MaxLength(255, { message: 'validation.MAX_LENGTH' })
   description: string;
 
   /**

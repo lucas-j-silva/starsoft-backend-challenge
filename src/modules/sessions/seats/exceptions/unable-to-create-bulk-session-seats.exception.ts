@@ -9,7 +9,8 @@
  * @module unable-to-create-bulk-session-seats.exception
  */
 
-import { BadRequestException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when bulk session seats creation fails.
@@ -19,9 +20,9 @@ import { BadRequestException, Logger } from '@nestjs/common';
  * operation fails to return a valid bulk session seats record. It logs a
  * warning message and returns a 400 Bad Request response to the client.
  *
- * @extends {BadRequestException}
+ * @extends {CustomException}
  */
-export class UnableToCreateBulkSessionSeatsException extends BadRequestException {
+export class UnableToCreateBulkSessionSeatsException extends CustomException {
   /**
    * Logger instance for this exception class.
    *
@@ -41,10 +42,10 @@ export class UnableToCreateBulkSessionSeatsException extends BadRequestException
    * a warning message for debugging purposes.
    */
   constructor() {
-    const message = 'Unable to create bulk session seats';
+    const message = 'sessions.UNABLE_TO_CREATE_BULK_SESSION_SEATS';
 
-    super(message);
+    super(message, 400);
 
-    this.logger.warn(message);
+    this.logger.warn('Unable to create bulk session seats');
   }
 }

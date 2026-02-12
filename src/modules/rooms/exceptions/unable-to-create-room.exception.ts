@@ -7,19 +7,20 @@
  * @module unable-to-create-room.exception
  */
 
-import { BadRequestException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Custom exception thrown when a room cannot be created in the database.
- * Extends NestJS's BadRequestException to provide HTTP 400 responses.
+ * Extends CustomException to provide HTTP 400 responses.
  *
- * @extends {BadRequestException}
+ * @extends {CustomException}
  *
  * @example
  * // Throw when unable to create room
  * throw new UnableToCreateRoomException();
  */
-export class UnableToCreateRoomException extends BadRequestException {
+export class UnableToCreateRoomException extends CustomException {
   /**
    * Logger instance for recording warning messages when the exception is thrown.
    * @private
@@ -28,9 +29,9 @@ export class UnableToCreateRoomException extends BadRequestException {
   private readonly logger = new Logger(UnableToCreateRoomException.name);
 
   constructor() {
-    const message = 'Unable to create room';
+    const message = 'rooms.UNABLE_TO_CREATE_ROOM';
 
-    super(message);
+    super(message, 400);
 
     this.logger.warn(message);
   }

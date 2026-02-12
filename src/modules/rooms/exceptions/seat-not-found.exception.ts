@@ -8,14 +8,15 @@
  * @module seat-not-found.exception
  */
 
-import { Logger, NotFoundException } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when a seat cannot be found in the database.
- * Extends NestJS NotFoundException to provide HTTP 404 responses.
+ * Extends CustomException to provide HTTP 404 responses.
  *
  * @class SeatNotFoundException
- * @extends {NotFoundException}
+ * @extends {CustomException}
  *
  * @example
  * // Throw with a specific seat ID
@@ -27,15 +28,19 @@ import { Logger, NotFoundException } from '@nestjs/common';
  * throw new SeatNotFoundException('room-uuid', 'A', 1);
  * // Logs: "Seat not found"
  */
-export class SeatNotFoundException extends NotFoundException {
+export class SeatNotFoundException extends CustomException {
   private readonly logger = new Logger(SeatNotFoundException.name);
 
   /**
    * Creates an instance of SeatNotFoundException.
    */
-  constructor() {
-    const message = `Seat not found`;
-    super(message);
+  constructor(id?: string) {
+    const message = id
+      ? 'rooms.SEAT_NOT_FOUND_WITH_ID'
+      : 'rooms.SEAT_NOT_FOUND';
+
+    super(message, 404, { id });
+
     this.logger.warn(message);
   }
 }

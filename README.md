@@ -46,25 +46,25 @@ Implemente uma API RESTful com as seguintes operações:
 
 **2.1. Gestão de Sessões**
 
-- Criar sessões de cinema (filme, horário, sala)
-- Definir assentos disponíveis por sessão (Mínimo 16 assentos)
-- Definir preço do ingresso
+- [x] Criar sessões de cinema (filme, horário, sala)
+- [x] Definir assentos disponíveis por sessão (Mínimo 16 assentos)
+- [x] Definir preço do ingresso
 
 **2.2. Reserva de Assentos**
 
-- Endpoint para reservar assento(s)
-- Reserva tem validade de 30 segundos
-- Retornar ID da reserva e timestamp de expiração
+- [x] Endpoint para reservar assento(s)
+- [x] Reserva tem validade de 30 segundos
+- [x] Retornar ID da reserva e timestamp de expiração
 
 **2.3. Confirmação de Pagamento**
 
-- Endpoint para confirmar pagamento de uma reserva, e assim converter reserva em venda definitiva
-- Publicar evento de venda confirmada
+- [x] Endpoint para confirmar pagamento de uma reserva, e assim converter reserva em venda definitiva
+- [x] Publicar evento de venda confirmada
 
 **2.4. Consultas**
 
-- Buscar disponibilidade de assentos por sessão (tempo real)
-- Histórico de compras por usuário
+- [x] Buscar disponibilidade de assentos por sessão (tempo real)
+- [x] Histórico de compras por usuário
 
 #### 3. **Processamento Assíncrono com Mensageria**
 

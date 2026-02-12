@@ -9,6 +9,7 @@
  * @module list-seats-with-pagination.dto
  */
 
+import { IsNotEmpty, IsUUID } from 'class-validator';
 import { PaginationDto } from 'src/shared/dtos/pagination.dto';
 
 /**
@@ -36,6 +37,8 @@ export class ListSeatsWithPaginationDto extends PaginationDto {
    *
    * @type {string}
    */
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
   roomId: string;
 
   /**

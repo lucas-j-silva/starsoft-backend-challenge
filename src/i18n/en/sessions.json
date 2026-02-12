@@ -1,0 +1,19 @@
+{
+  "NOT_ENOUGH_SEATS": "The selected room does not have enough seats",
+  "NOT_FOUND": "Session not found",
+  "NOT_FOUND_WITH_ID": "Session with the ID {id} was not found",
+  "UNABLE_TO_CREATE_SESSION": "Unable to create session",
+  "UNABLE_TO_UPDATE_SESSION": "Unable to update session",
+  "SESSION_SEAT_ALREADY_RESERVED": "Session seat already reserved",
+  "SESSION_SEAT_ALREADY_RESERVED_WITH_EXPIRES_AT": "Session seat already reserved until {expiresAt}",
+  "SESSION_SEAT_NOT_AVAILABLE": "Session seat not available",
+  "SESSION_SEAT_NOT_AVAILABLE_WITH_ID": "Session seat with the ID {id} was not available",
+  "SESSION_SEAT_NOT_FOUND": "Session seat not found",
+  "SESSION_SEAT_NOT_FOUND_WITH_ID": "Session seat with the ID {id} was not found",
+  "SESSION_SEAT_RESERVATION_NOT_FOUND": "Session seat reservation not found",
+  "UNABLE_TO_CREATE_BULK_SESSION_SEATS": "Unable to create bulk session seats",
+  "UNABLE_TO_CREATE_SESSION_SEAT_RESERVATION": "Unable to create session seat reservation",
+  "UNABLE_TO_CREATE_SESSION_SEAT": "Unable to create session seat",
+  "UNABLE_TO_RESERVE_SESSION_SEAT": "Unable to reserve session seat",
+  "UNABLE_TO_UPDATE_SESSION_SEAT": "Unable to update session seat"
+}

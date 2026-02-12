@@ -11,8 +11,8 @@
 
 import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import {
+  IsInt,
   IsNotEmpty,
-  IsNumber,
   IsPositive,
   IsString,
   IsUUID,
@@ -52,9 +52,9 @@ export class CreateSeatDto {
       'The unique identifier of the room where the seat will be created',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
-  @IsString()
-  @IsNotEmpty()
-  @IsUUID()
+  @IsString({ message: 'validation.INVALID_STRING' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsUUID(undefined, { message: 'validation.INVALID_UUID' })
   roomId: string;
 
   /**
@@ -68,8 +68,8 @@ export class CreateSeatDto {
     description: 'The row identifier for the seat (typically a letter)',
     example: 'A',
   })
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'validation.INVALID_STRING' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
   row: string;
 
   /**
@@ -83,9 +83,9 @@ export class CreateSeatDto {
     description: 'The column number for the seat within the row',
     example: 12,
   })
-  @IsNumber()
-  @IsNotEmpty()
-  @IsPositive()
+  @IsInt({ message: 'validation.IS_INT' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @IsPositive({ message: 'validation.IS_POSITIVE' })
   column: number;
 
   /**

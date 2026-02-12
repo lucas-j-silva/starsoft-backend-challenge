@@ -39,9 +39,9 @@ export class CreateRoomDto {
     example: 'IMAX Theater',
     maxLength: 128,
   })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(128)
+  @IsString({ message: 'validation.INVALID_STRING' })
+  @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
+  @MaxLength(128, { message: 'validation.MAX_LENGTH' })
   name: string;
 
   /**

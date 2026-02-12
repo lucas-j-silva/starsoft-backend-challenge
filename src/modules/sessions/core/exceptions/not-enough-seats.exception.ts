@@ -9,12 +9,12 @@
  */
 
 import { Logger } from '@nestjs/common';
-import { BadRequestException } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when a session does not have enough seats.
  *
- * @extends {BadRequestException}
+ * @extends {CustomException}
  *
  * @description
  * This exception is used to indicate that a room does not have the minimum
@@ -26,7 +26,7 @@ import { BadRequestException } from '@nestjs/common';
  *   throw new NotEnoughSeatsException();
  * }
  */
-export class NotEnoughSeatsException extends BadRequestException {
+export class NotEnoughSeatsException extends CustomException {
   /**
    * Logger instance for this exception class.
    * @private
@@ -41,9 +41,9 @@ export class NotEnoughSeatsException extends BadRequestException {
    * Initializes the exception with a predefined message and logs a warning.
    */
   constructor() {
-    const message = 'The selected room does not have enough seats';
+    const message = 'sessions.NOT_ENOUGH_SEATS';
 
-    super(message);
+    super(message, 400);
 
     this.logger.warn(message);
   }

@@ -7,19 +7,19 @@
  * @module unable-to-update-session.exception
  */
 
-import { BadRequestException } from '@nestjs/common';
+import { CustomException } from 'src/shared/exceptions/custom.exception';
 import { Logger } from '@nestjs/common';
 
 /**
  * Exception thrown when a session cannot be updated.
  *
- * @extends {BadRequestException}
+ * @extends {CustomException}
  *
  * @example
  * // Throw when unable to update session
  * throw new UnableToUpdateSessionException();
  */
-export class UnableToUpdateSessionException extends BadRequestException {
+export class UnableToUpdateSessionException extends CustomException {
   /**
    * Logger instance for recording warning messages when the exception is thrown.
    * @private
@@ -35,9 +35,9 @@ export class UnableToUpdateSessionException extends BadRequestException {
    * logs a warning to help with debugging and monitoring.
    */
   constructor(customMessage?: string) {
-    const message = customMessage ?? 'Unable to update session';
+    const message = customMessage ?? 'sessions.UNABLE_TO_UPDATE_SESSION';
 
-    super(message);
+    super(message, 400);
 
     this.logger.warn(message);
   }
