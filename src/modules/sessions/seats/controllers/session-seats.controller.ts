@@ -81,7 +81,36 @@ export class SessionSeatsController {
   async list(
     @Param('sessionId', ParseUUIDPipe) sessionId: string,
   ): Promise<SessionSeatSchemaWithRelations[]> {
-    return this.sessionSeatsService.list(sessionId);
+    return this.sessionSeatsService.list({ id: sessionId });
+  }
+
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'List seats for the current user in a session',
+    description: 'Lists all seats for the current user in a session',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Seats listed successfully',
+    type: [SessionSeatWithRelationsApiSchema],
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Session not found',
+  })
+  @ApiParam({
+    name: 'sessionId',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  async listForCurrentUser(
+    @Param('sessionId', ParseUUIDPipe) sessionId: string,
+    @Session() session: UserSession,
+  ): Promise<SessionSeatSchemaWithRelations[]> {
+    return this.sessionSeatsService.list({
+      id: sessionId,
+      userId: session.user.id,
+    });
   }
 
   /**

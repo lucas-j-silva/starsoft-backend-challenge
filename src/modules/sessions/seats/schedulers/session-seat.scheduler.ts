@@ -75,8 +75,6 @@ export class SessionSeatScheduler {
   async handleSessionSeatReservationExpiration(): Promise<void> {
     const startTime = performance.now();
 
-    this.logger.debug('Checking for expired session seat reservations');
-
     const expiredReservations =
       await this.sessionSeatReservationsRepository.listExpiredSessionSeatReservations();
 
@@ -98,8 +96,9 @@ export class SessionSeatScheduler {
       await this.sessionSeatReservationsRepository.delete(reservation.id);
     }
 
-    this.logger.debug(
-      `Found ${expiredReservations.length} expired session seat reservations, processed in: ${performance.now() - startTime}ms`,
-    );
+    if (expiredReservations.length > 0)
+      this.logger.debug(
+        `Found ${expiredReservations.length} expired session seat reservations, processed in: ${performance.now() - startTime}ms`,
+      );
   }
 }

@@ -19,6 +19,9 @@ import { CreateManySessionSeatsDto, ReserveSessionSeatDto } from '../dtos';
 import { ListSessionSeatsUseCase } from '../use-cases/list-session-seats.use-case';
 import { ReserveSessionSeatUseCase } from '../use-cases/reserve-session-seat.use-case';
 import { CreateManySessionSeatsUseCase } from '../use-cases/create-many-session-seats.use-case';
+import { HandlePaymentApprovedUseCase } from '../use-cases/handle-payment-approved.use-case';
+import { PaymentApprovedMessage } from 'src/modules/payments/events/messages';
+import { ListSessionSeatsDto } from '../dtos';
 
 /**
  * Service for session seat management operations.
@@ -56,11 +59,13 @@ export class SessionSeatsService {
    * @param {ListSessionSeatsUseCase} listSessionSeatsUseCase - Use case for listing session seats.
    * @param {ReserveSessionSeatUseCase} reserveSessionSeatUseCase - Use case for reserving a session seat.
    * @param {CreateManySessionSeatsUseCase} createManySessionSeatsUseCase - Use case for bulk creating session seats.
+   * @param {HandlePaymentApprovedUseCase} handlePaymentApprovedUseCase - Use case for handling payment approved.
    */
   constructor(
     private readonly listSessionSeatsUseCase: ListSessionSeatsUseCase,
     private readonly reserveSessionSeatUseCase: ReserveSessionSeatUseCase,
     private readonly createManySessionSeatsUseCase: CreateManySessionSeatsUseCase,
+    private readonly handlePaymentApprovedUseCase: HandlePaymentApprovedUseCase,
   ) {}
 
   /**
@@ -70,15 +75,17 @@ export class SessionSeatsService {
    * Retrieves all session seats associated with the specified session ID,
    * including related seat and session data.
    *
-   * @param {string} sessionId - The unique identifier of the session.
+   * @param {ListSessionSeatsDto} data - The data containing the session ID and user ID to query.
    * @returns {Promise<SessionSeatSchemaWithRelations[]>} A promise that resolves to an array of session seats with their relations.
    *
    * @example
-   * const seats = await sessionSeatsService.list('550e8400-e29b-41d4-a716-446655440000');
+   * const seats = await sessionSeatsService.list({ id: '550e8400-e29b-41d4-a716-446655440000', userId: 'user-123' });
    * // Returns: [{ id: '...', isAvailable: true, relations: { seat: {...}, session: {...} } }, ...]
    */
-  async list(sessionId: string): Promise<SessionSeatSchemaWithRelations[]> {
-    return this.listSessionSeatsUseCase.execute({ id: sessionId });
+  async list(
+    data: ListSessionSeatsDto,
+  ): Promise<SessionSeatSchemaWithRelations[]> {
+    return this.listSessionSeatsUseCase.execute(data);
   }
 
   /**
@@ -125,5 +132,27 @@ export class SessionSeatsService {
     data: CreateManySessionSeatsDto,
   ): Promise<SessionSeatSchema[]> {
     return this.createManySessionSeatsUseCase.execute(data);
+  }
+
+  /**
+   * Handles a payment approved event.
+   *
+   * @description
+   * Handles a payment approved event by updating the session seat availability.
+   *
+   * @param {PaymentApprovedMessage} payload - The payment approved message.
+   * @returns {Promise<void>} A promise that resolves when the payment approved event is handled.
+   *
+   * @example
+   * await sessionSeatsService.handlePaymentApproved({
+   *   externalId: 'payment-uuid',
+   *   userId: 'user-uuid',
+   *   amountInCents: 1000,
+   *   expiresAt: new Date(),
+   *   approvedAt: new Date()
+   * });
+   */
+  async handlePaymentApproved(payload: PaymentApprovedMessage): Promise<void> {
+    return this.handlePaymentApprovedUseCase.execute(payload);
   }
 }

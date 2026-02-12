@@ -19,6 +19,7 @@ import { UnableToCreateSessionSeatReservationException } from '../exceptions/una
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
 import { eq, lt } from 'drizzle-orm';
+import { SessionSeatReservationNotFoundException } from '../exceptions/session-seat-reservation-not-found.exception';
 
 /**
  * Repository for session seat reservation database operations.
@@ -51,6 +52,17 @@ export class SessionSeatReservationsRepository {
   constructor(
     private readonly txHost: TransactionHost<DatabaseTransactionAdapter>,
   ) {}
+
+  async findById(id: string): Promise<SessionSeatReservationSchema> {
+    const [reservation] = await this.txHost.tx
+      .select()
+      .from(sessionSeatReservationsTable)
+      .where(eq(sessionSeatReservationsTable.id, id));
+
+    if (!reservation) throw new SessionSeatReservationNotFoundException();
+
+    return reservation;
+  }
 
   /**
    * Retrieves all expired session seat reservations.

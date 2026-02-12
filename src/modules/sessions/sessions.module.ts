@@ -35,5 +35,6 @@ import { SessionSeatsModule } from './seats/session-seats.module';
  */
 @Module({
   imports: [SessionsCoreModule, SessionSeatsModule],
+  exports: [SessionsCoreModule, SessionSeatsModule],
 })
 export class SessionsModule {}

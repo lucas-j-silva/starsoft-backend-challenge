@@ -10,9 +10,17 @@
  */
 
 import { UUIDGeneratorHelper } from 'src/shared/helpers';
-import { pgTable, uuid, timestamp, unique, boolean } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  uuid,
+  timestamp,
+  unique,
+  boolean,
+  text,
+} from 'drizzle-orm/pg-core';
 import { SeatSchema, seatsTable } from 'src/modules/rooms/schemas/seats.schema';
 import { SessionSchema, sessionsTable } from '../../core/schemas';
+import { user, UserSchema } from 'src/modules/auth/schemas/auth.schema';
 
 /**
  * Database table schema for session seats.
@@ -59,6 +67,12 @@ export const sessionSeatsTable = pgTable(
       .references(() => seatsTable.id),
 
     /**
+     * Reference to the user who reserved the seat.
+     * @type {string} Text foreign key referencing the user table.
+     */
+    userId: text('user_id').references(() => user.id),
+
+    /**
      * Indicates whether the seat is available for reservation or purchase.
      * @type {boolean} Defaults to true.
      */
@@ -98,6 +112,7 @@ export type SessionSeatSchemaWithRelations = Omit<
     relations: Partial<{
       seat: SeatSchema | null;
       session: SessionSchema | null;
+      user: UserSchema | null;
     }>;
   }>;
 

@@ -71,6 +71,8 @@ export class SessionSeatsCacheService {
       .getInstance()
       .get(`reservation:${reservationId}`);
 
+    console.log(expiresAt);
+
     if (!expiresAt) return null;
 
     return new Date(expiresAt);
@@ -132,6 +134,8 @@ export class SessionSeatsCacheService {
       .getInstance()
       .get(`availability:${sessionSeatId}`);
 
-    return isAvailable ? Boolean(isAvailable) : null;
+    if (!isAvailable) return null;
+
+    return isAvailable === 'true' ? true : false;
   }
 }

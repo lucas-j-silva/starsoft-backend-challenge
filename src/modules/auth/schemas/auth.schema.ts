@@ -37,6 +37,8 @@ export const user = pgTable('user', {
     .notNull(),
 });
 
+export type UserSchema = typeof user.$inferSelect;
+
 /**
  * Session table schema - stores active user sessions.
  *

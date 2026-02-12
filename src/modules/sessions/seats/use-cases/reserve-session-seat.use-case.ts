@@ -24,6 +24,8 @@ import {
 } from '../exceptions';
 import { SessionSeatsProducer } from '../events/producers';
 import { Transactional } from '@nestjs-cls/transactional';
+import { CacheLockService } from 'src/shared/cache/cache-lock.service';
+import { UnableToReserveSessionSeatException } from '../exceptions/unable-to-reserve-session-seat.exception';
 
 /**
  * Use case for reserving a session seat.
@@ -67,20 +69,27 @@ export class ReserveSessionSeatUseCase implements IReserveSessionSeatUseCase {
     private readonly sessionSeatsRepository: SessionSeatsRepository,
     private readonly sessionSeatsCacheService: SessionSeatsCacheService,
     private readonly sessionSeatsProducer: SessionSeatsProducer,
+    private readonly cacheLockService: CacheLockService,
   ) {}
 
   /**
    * Executes the session seat reservation process.
    *
    * @description
-   * Validates the session seat availability and checks for existing reservations
-   * in parallel. If valid, creates a new reservation with a 30-second timeout,
-   * caches the reservation, and emits a reservation created event.
+   * Acquires a distributed lock using Redis/Redlock to prevent race conditions
+   * during concurrent reservation attempts for the same seat. The lock has a
+   * 1-second TTL and uses the pattern `locks:reservation:{sessionSeatId}`.
+   *
+   * Once the lock is acquired, validates the session seat availability and checks
+   * for existing reservations in parallel. If valid, creates a new reservation
+   * with a 30-second timeout, caches the reservation, and emits a reservation
+   * created event. The lock is released after the operation completes.
    *
    * @param {ReserveSessionSeatDto} data - The data containing user ID and session seat ID.
    * @returns {Promise<SessionSeatReservationSchema>} A promise that resolves to the created reservation.
    * @throws {SessionSeatNotAvailableException} When the session seat is not available.
    * @throws {SessionSeatAlreadyReservedException} When the session seat is already reserved.
+   * @throws {UnableToReserveSessionSeatException} When the distributed lock cannot be acquired or the reservation fails.
    *
    * @example
    * const reservation = await useCase.execute({
@@ -95,44 +104,74 @@ export class ReserveSessionSeatUseCase implements IReserveSessionSeatUseCase {
   ): Promise<SessionSeatReservationSchema> {
     const reservationStartTime = performance.now();
 
-    // Validate session seat and reservation in parallel to improve performance
-    await Promise.all([
-      this.validateSessionSeat(data.sessionSeatId),
-      this.validateReservation(data.sessionSeatId),
-    ]);
-
-    // 30 seconds reservation timeout
-    const expiresAt = new Date(
-      Date.now() + 1000 * this.RESERVATION_TIMEOUT_IN_SECONDS,
+    const lock = await this.cacheLockService.acquireLock(
+      `locks:reservation:${data.sessionSeatId}`,
+      1000,
     );
 
-    // Process reservations and cache in parallel to improve performance
-    const [reservation] = await Promise.all([
-      this.sessionSeatReservationsRepository.insert({
-        userId: data.userId,
-        sessionSeatId: data.sessionSeatId,
-        expiresAt: expiresAt,
-      }),
-      this.sessionSeatsCacheService.setSeatReservation(
+    if (!lock)
+      throw new UnableToReserveSessionSeatException(
+        'Failed while trying to reserve session seat, please try again later',
+      );
+
+    try {
+      // Validate session seat and reservation in parallel to improve performance
+      await Promise.all([
+        this.validateSessionSeat(data.sessionSeatId),
+        this.validateReservation(data.sessionSeatId),
+      ]);
+
+      // 30 seconds reservation timeout
+      const expiresAt = new Date(
+        Date.now() + 1000 * this.RESERVATION_TIMEOUT_IN_SECONDS,
+      );
+
+      await this.sessionSeatsCacheService.setSeatReservation(
         data.sessionSeatId,
         expiresAt,
-      ),
-    ]);
+      );
 
-    // Emit reservation created event
-    await this.sessionSeatsProducer.sendReservationCreatedEvent({
-      id: reservation.id,
-      createdAt: reservation.createdAt,
-      sessionSeatId: reservation.sessionSeatId,
-      userId: reservation.userId,
-      expiresAt: reservation.expiresAt,
-    });
+      this.logger.debug(
+        `Session seat validation time: ${performance.now() - reservationStartTime}ms`,
+      );
 
-    this.logger.debug(
-      `Reservation processing time: ${performance.now() - reservationStartTime}ms`,
-    );
+      // Process reservations and cache in parallel to improve performance
+      const [reservation] = await Promise.all([
+        this.sessionSeatReservationsRepository.insert({
+          userId: data.userId,
+          sessionSeatId: data.sessionSeatId,
+          expiresAt: expiresAt,
+        }),
+      ]);
 
-    return reservation;
+      // Emit reservation created event
+      await this.sessionSeatsProducer.sendReservationCreatedEvent({
+        sessionId: data.sessionId,
+        id: reservation.id,
+        createdAt: reservation.createdAt,
+        sessionSeatId: reservation.sessionSeatId,
+        userId: reservation.userId,
+        expiresAt: reservation.expiresAt,
+      });
+
+      this.logger.debug(
+        `Reservation processing time: ${performance.now() - reservationStartTime}ms`,
+      );
+
+      return reservation;
+    } catch (error) {
+      await this.cacheLockService.releaseLock(
+        `locks:reservation:${data.sessionSeatId}`,
+        lock.value,
+      );
+
+      throw error;
+    } finally {
+      await this.cacheLockService.releaseLock(
+        `locks:reservation:${data.sessionSeatId}`,
+        lock.value,
+      );
+    }
   }
 
   /**
@@ -156,8 +195,11 @@ export class ReserveSessionSeatUseCase implements IReserveSessionSeatUseCase {
         sessionSeatId,
       );
 
+    console.log(sessionSeatId, 'cachedAvailability', cachedAvailability);
+
     if (cachedAvailability !== null) {
-      if (!cachedAvailability) throw new SessionSeatNotAvailableException();
+      if (cachedAvailability === false)
+        throw new SessionSeatNotAvailableException();
 
       this.logger.debug(
         `Session seat validation cache hit time: ${performance.now() - sessionSeatValidationStartTime}ms`,

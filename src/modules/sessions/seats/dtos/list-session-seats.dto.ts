@@ -8,7 +8,7 @@
  * @module list-session-seats.dto
  */
 
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
 
 /**
  * Data Transfer Object for listing session seats.
@@ -25,6 +25,19 @@ import { IsNotEmpty, IsUUID } from 'class-validator';
  * });
  */
 export class ListSessionSeatsDto {
+  /**
+   * The unique identifier of the user to list seats for.
+   *
+   * @type {string}
+   * @memberof ListSessionSeatsDto
+   *
+   * @example
+   * '550e8400-e29b-41d4-a716-446655440000'
+   */
+  @IsOptional()
+  @IsUUID()
+  userId?: string;
+
   /**
    * The unique identifier of the session to list seats for.
    *

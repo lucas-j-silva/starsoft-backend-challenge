@@ -11,13 +11,13 @@ export const DRIZZLE_PROVIDER = {
   provide: DB_PROVIDER,
   useFactory: (configService: ConfigService) => {
     return drizzle(configService.getOrThrow<string>('DATABASE_URL'), {
-      logger: {
-        logQuery(query, params) {
-          logger.debug(
-            params?.length ? `${query} | [${params.join(', ')}]` : query,
-          );
-        },
-      },
+      // logger: {
+      //   logQuery(query, params) {
+      //     logger.debug(
+      //       params?.length ? `${query} | [${params.join(', ')}]` : query,
+      //     );
+      //   },
+      // },
     });
   },
   inject: [ConfigService],

@@ -77,6 +77,7 @@ export class SessionSeatsProducer {
         allowAutoTopicCreation: true,
       },
       client: {
+        clientId: 'session-seats-producer-client',
         brokers: this.configService
           .getOrThrow<string>('KAFKA_BROKERS')
           .split(','),

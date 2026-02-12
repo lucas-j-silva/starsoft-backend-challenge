@@ -10,6 +10,7 @@ import { ClsPluginTransactional } from '@nestjs-cls/transactional';
 import { ClsModule } from 'nestjs-cls';
 import { DB_PROVIDER } from './shared/database/database.provider';
 import { ScheduleModule } from '@nestjs/schedule';
+import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     MoviesModule,
     RoomsModule,
     SessionsModule,
+    PaymentsModule,
   ],
   controllers: [],
   providers: [],

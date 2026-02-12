@@ -21,6 +21,7 @@ import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
 import { ListSessionsWithPaginationUseCase } from '../use-cases/list-sessions-with-pagination.use-case';
 import { UpdateSessionUseCase } from '../use-cases/update-session.use-case';
 import { CreateSessionUseCase } from '../use-cases/create-session.use-case';
+import { GetSessionValuePerSeatUseCase } from '../use-cases/get-session-value-per-seat.use-case';
 
 /**
  * Service class for managing session operations.
@@ -53,6 +54,7 @@ export class SessionsService {
     private readonly createSessionUseCase: CreateSessionUseCase,
     private readonly listSessionsWithPaginationUseCase: ListSessionsWithPaginationUseCase,
     private readonly updateSessionUseCase: UpdateSessionUseCase,
+    private readonly getSessionValuePerSeatUseCase: GetSessionValuePerSeatUseCase,
   ) {}
 
   /**
@@ -105,5 +107,9 @@ export class SessionsService {
     data: ListSessionsWithPaginationDto,
   ): Promise<PaginationResultDto<SessionSchema>> {
     return this.listSessionsWithPaginationUseCase.execute(data);
+  }
+
+  async getSessionValuePerSeat(id: string): Promise<number> {
+    return this.getSessionValuePerSeatUseCase.execute({ id });
   }
 }

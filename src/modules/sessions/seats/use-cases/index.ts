@@ -12,6 +12,7 @@
 import { ListSessionSeatsUseCase } from './list-session-seats.use-case';
 import { ReserveSessionSeatUseCase } from './reserve-session-seat.use-case';
 import { CreateManySessionSeatsUseCase } from './create-many-session-seats.use-case';
+import { HandlePaymentApprovedUseCase } from './handle-payment-approved.use-case';
 
 /**
  * Array of all session seats use case providers.
@@ -35,4 +36,5 @@ export const SessionSeatsUseCases = [
   ListSessionSeatsUseCase,
   ReserveSessionSeatUseCase,
   CreateManySessionSeatsUseCase,
+  HandlePaymentApprovedUseCase,
 ];

@@ -20,13 +20,14 @@ import {
 } from '../exceptions';
 import { sessionSeatsTable } from '../schemas/session-seats.schema';
 import { Injectable } from '@nestjs/common';
-import { asc, eq } from 'drizzle-orm';
+import { and, asc, eq } from 'drizzle-orm';
 import { seatsTable } from 'src/modules/rooms/schemas';
 import { getTableColumns } from 'drizzle-orm';
 import { SessionSeatNotFoundException } from '../exceptions';
 import { sessionsTable } from '../../core/schemas';
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
+import { UnableToUpdateSessionSeatException } from '../exceptions/unable-to-update-session-seat.exception';
 
 /**
  * Repository for session seat database operations.
@@ -113,6 +114,7 @@ export class SessionSeatsRepository {
 
     return {
       id: sessionSeat.session_seats.id,
+      userId: sessionSeat.session_seats.userId,
       isAvailable: sessionSeat.session_seats.isAvailable,
       soldAt: sessionSeat.session_seats.soldAt,
       relations: {
@@ -148,6 +150,7 @@ export class SessionSeatsRepository {
     const sessionSeats = await this.txHost.tx
       .select({
         id: sessionSeatsTable.id,
+        userId: sessionSeatsTable.userId,
         isAvailable: sessionSeatsTable.isAvailable,
         soldAt: sessionSeatsTable.soldAt,
         seat: getTableColumns(seatsTable),
@@ -159,6 +162,55 @@ export class SessionSeatsRepository {
 
     return sessionSeats.map((sessionSeat) => ({
       id: sessionSeat.id,
+      userId: sessionSeat.userId,
+      isAvailable: sessionSeat.isAvailable,
+      soldAt: sessionSeat.soldAt,
+      relations: {
+        seat: sessionSeat.seat,
+      },
+    }));
+  }
+
+  /**
+   * Lists all session seats for a specific session by user ID.
+   *
+   * @description
+   * Retrieves all session seats associated with the given session ID and user ID,
+   * including related seat information. Results are ordered by seat row and column.
+   *
+   * @param {string} sessionId - The unique identifier of the session.
+   * @param {string} userId - The unique identifier of the user.
+   * @returns {Promise<SessionSeatSchemaWithRelations[]>} A promise that resolves to an array of session seats with relations.
+   *
+   * @example
+   * const seats = await sessionSeatsRepo.listAllByUserId('550e8400-e29b-41d4-a716-446655440000', 'user-123');
+   * console.log(`Found ${seats.length} seats for the user in the session`);
+   */
+  async listAllByUserId(
+    sessionId: string,
+    userId: string,
+  ): Promise<SessionSeatSchemaWithRelations[]> {
+    const sessionSeats = await this.txHost.tx
+      .select({
+        id: sessionSeatsTable.id,
+        userId: sessionSeatsTable.userId,
+        isAvailable: sessionSeatsTable.isAvailable,
+        soldAt: sessionSeatsTable.soldAt,
+        seat: getTableColumns(seatsTable),
+      })
+      .from(sessionSeatsTable)
+      .where(
+        and(
+          eq(sessionSeatsTable.userId, userId),
+          eq(sessionSeatsTable.sessionId, sessionId),
+        ),
+      )
+      .leftJoin(seatsTable, eq(sessionSeatsTable.seatId, seatsTable.id))
+      .orderBy(asc(seatsTable.row), asc(seatsTable.column));
+
+    return sessionSeats.map((sessionSeat) => ({
+      id: sessionSeat.id,
+      userId: sessionSeat.userId,
       isAvailable: sessionSeat.isAvailable,
       soldAt: sessionSeat.soldAt,
       relations: {
@@ -224,6 +276,21 @@ export class SessionSeatsRepository {
       .returning();
 
     if (!sessionSeat) throw new UnableToCreateSessionSeatException();
+
+    return sessionSeat;
+  }
+
+  async update(
+    id: string,
+    data: Partial<SessionSeatInsertSchema>,
+  ): Promise<SessionSeatSchema> {
+    const [sessionSeat] = await this.txHost.tx
+      .update(sessionSeatsTable)
+      .set(data)
+      .where(eq(sessionSeatsTable.id, id))
+      .returning();
+
+    if (!sessionSeat) throw new UnableToUpdateSessionSeatException();
 
     return sessionSeat;
   }

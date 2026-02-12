@@ -8,6 +8,8 @@
  * @module reservation-created.message
  */
 
+import { IsDate, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+
 /**
  * Message class representing a seat reservation creation event.
  *
@@ -20,6 +22,7 @@
  *
  * @example
  * const message = new ReservationCreatedMessage({
+ *   sessionId: '550e8400-e29b-41d4-a716-446655440000',
  *   id: '550e8400-e29b-41d4-a716-446655440000',
  *   createdAt: new Date(),
  *   userId: '550e8400-e29b-41d4-a716-446655440001',
@@ -29,6 +32,19 @@
  */
 export class ReservationCreatedMessage {
   /**
+   * The unique identifier of the session.
+   *
+   * @type {string}
+   * @memberof ReservationCreatedMessage
+   *
+   * @example
+   * '550e8400-e29b-41d4-a716-446655440000'
+   */
+  @IsNotEmpty()
+  @IsUUID()
+  sessionId: string;
+
+  /**
    * The unique identifier of the reservation.
    *
    * @type {string}
@@ -37,6 +53,8 @@ export class ReservationCreatedMessage {
    * @example
    * '550e8400-e29b-41d4-a716-446655440000'
    */
+  @IsNotEmpty()
+  @IsUUID()
   id: string;
 
   /**
@@ -48,6 +66,8 @@ export class ReservationCreatedMessage {
    * @example
    * new Date('2024-01-15T19:30:00Z')
    */
+  @IsNotEmpty()
+  @IsDate()
   createdAt: Date;
 
   /**
@@ -59,6 +79,8 @@ export class ReservationCreatedMessage {
    * @example
    * '550e8400-e29b-41d4-a716-446655440001'
    */
+  @IsNotEmpty()
+  @IsString()
   userId: string;
 
   /**
@@ -70,6 +92,8 @@ export class ReservationCreatedMessage {
    * @example
    * '550e8400-e29b-41d4-a716-446655440002'
    */
+  @IsNotEmpty()
+  @IsUUID()
   sessionSeatId: string;
 
   /**
@@ -81,6 +105,8 @@ export class ReservationCreatedMessage {
    * @example
    * new Date('2024-01-15T19:45:00Z')
    */
+  @IsDate()
+  @IsNotEmpty()
   expiresAt: Date;
 
   /**

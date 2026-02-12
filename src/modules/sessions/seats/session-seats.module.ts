@@ -23,6 +23,7 @@ import { SessionSeatsService } from './services';
 import { SessionSeatsCacheService } from './cache/services';
 import { SessionSeatsProducer } from './events/producers';
 import { SessionSeatScheduler } from './schedulers/session-seat.scheduler';
+import { SessionSeatPaymentApprovedConsumer } from './events/consumers';
 
 /**
  * Module for managing session seats and reservations.
@@ -49,7 +50,7 @@ import { SessionSeatScheduler } from './schedulers/session-seat.scheduler';
  */
 @Module({
   imports: [DatabaseModule, CacheModule],
-  controllers: [SessionSeatsController],
+  controllers: [SessionSeatsController, SessionSeatPaymentApprovedConsumer],
   providers: [
     ...SessionSeatsUseCases,
     SessionSeatsRepository,

@@ -54,7 +54,9 @@ export class ListSessionSeatsUseCase implements IListSessionSeatsUseCase {
   async execute(
     data: ListSessionSeatsDto,
   ): Promise<SessionSeatSchemaWithRelations[]> {
-    const sessionSeats = await this.sessionSeatsRepository.listAll(data.id);
+    const sessionSeats = data.userId
+      ? await this.sessionSeatsRepository.listAllByUserId(data.id, data.userId)
+      : await this.sessionSeatsRepository.listAll(data.id);
 
     return sessionSeats;
   }
