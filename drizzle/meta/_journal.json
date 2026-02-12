@@ -36,6 +36,20 @@
       "when": 1770743295874,
       "tag": "0004_dizzy_tombstone",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1770834863271,
+      "tag": "0005_acoustic_marrow",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770901722507,
+      "tag": "0006_daffy_smiling_tiger",
+      "breakpoints": true
     }
   ]
 }
