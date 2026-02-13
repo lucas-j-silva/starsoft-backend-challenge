@@ -7,12 +7,15 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Query,
 } from '@nestjs/common';
-import { CreateMovieDto } from '../dtos';
+import { CreateMovieDto, ListMoviesWithPaginationDto } from '../dtos';
 import { MoviesService } from '../services';
 import { MovieSchema } from '../schemas';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { MovieApiSchema } from '../swagger/schemas/movie-api.schema';
+import { MovieApiSchema } from '../swagger/schemas/movie.api-schema';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
+import { MoviesPaginationResultApiSchema } from '../swagger/schemas/movies-pagination-result.api-schema';
 
 /**
  * Controller responsible for handling HTTP requests related to movies.
@@ -34,6 +37,33 @@ export class MoviesController {
    */
   constructor(private readonly moviesService: MoviesService) {}
 
+  /**
+   * Lists all movies with pagination.
+   *
+   * @async
+   * @param {ListMoviesWithPaginationDto} listMoviesWithPaginationDto - The data transfer object containing pagination parameters.
+   * @returns {Promise<PaginationResultDto<MovieSchema>>} A promise that resolves to a paginated result containing movies.
+   *
+   * @example
+   * // GET /movies?page=1&limit=10
+   * // Response: { data: [...], metadata: { page: 1, limit: 10, total: 100 } }
+   */
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'List movies with pagination',
+    description: 'Lists all movies with pagination',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Movies listed successfully',
+    type: MoviesPaginationResultApiSchema,
+  })
+  async listWithPagination(
+    @Query() listMoviesWithPaginationDto: ListMoviesWithPaginationDto,
+  ): Promise<PaginationResultDto<MovieSchema>> {
+    return this.moviesService.listWithPagination(listMoviesWithPaginationDto);
+  }
   /**
    * Creates a new movie resource.
    *

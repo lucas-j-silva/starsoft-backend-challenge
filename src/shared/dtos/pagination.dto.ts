@@ -8,6 +8,7 @@
  * @module pagination.dto
  */
 
+import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsOptional, Max, Min } from 'class-validator';
 
 /**
@@ -27,6 +28,10 @@ import { IsInt, IsNotEmpty, IsOptional, Max, Min } from 'class-validator';
  * const dto = new PaginationDto();
  * dto.page = 2;
  */
+@ApiSchema({
+  name: 'PaginationDto',
+  description: 'The schema for the pagination',
+})
 export class PaginationDto {
   /**
    * The maximum number of items to return per page.
@@ -40,6 +45,11 @@ export class PaginationDto {
   @IsInt({ message: 'validation.IS_INT' })
   @Min(1, { message: 'validation.MIN' })
   @Max(100, { message: 'validation.MAX' })
+  @ApiProperty({
+    description: 'The limit',
+    example: 10,
+    required: false,
+  })
   limit?: number;
 
   /**
@@ -53,5 +63,10 @@ export class PaginationDto {
   @IsInt({ message: 'validation.IS_INT' })
   @IsNotEmpty({ message: 'validation.IS_NOT_EMPTY' })
   @Min(1, { message: 'validation.MIN' })
+  @ApiProperty({
+    description: 'The page',
+    example: 1,
+    minimum: 1,
+  })
   page: number;
 }

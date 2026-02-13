@@ -34,11 +34,11 @@ Imagine a seguinte situação:
 
 Configure um ambiente de desenvolvimento utilizando **Docker** e **Docker Compose**, incluindo:
 
-- Aplicação Node.js com **NestJS**
-- **Banco de dados relacional** (PostgreSQL, MySQL, etc.)
-- **Sistema de mensageria** (Kafka, RabbitMQ, etc.)
-- **Banco de dados distribuído** para cache (Redis, Memcached, etc.)
-- A aplicação deve ser iniciada com um único comando (`docker-compose up`)
+- [x] Aplicação Node.js com **NestJS**
+- [x] **Banco de dados relacional** (PostgreSQL, MySQL, etc.)
+- [x] **Sistema de mensageria** (Kafka, RabbitMQ, etc.)
+- [x] **Banco de dados distribuído** para cache (Redis, Memcached, etc.)
+- [x] A aplicação deve ser iniciada com um único comando (`docker-compose up`)
 
 #### 2. **API RESTful - Gestão de Ingressos**
 
@@ -68,9 +68,9 @@ Implemente uma API RESTful com as seguintes operações:
 
 #### 3. **Processamento Assíncrono com Mensageria**
 
-- Usar **sistema de mensageria** para comunicação assíncrona entre componentes
+- [x] Usar **sistema de mensageria** para comunicação assíncrona entre componentes
 - Publicar eventos quando: reserva criada, pagamento confirmado, reserva expirada, assento liberado
-- Consumir e processar esses eventos de forma confiável
+- [x] Consumir e processar esses eventos de forma confiável
 
 #### 4. **Logging**
 
@@ -78,11 +78,11 @@ Implemente uma API RESTful com as seguintes operações:
 
 #### 5. **Clean Code e Boas Práticas**
 
-- Aplicar princípios SOLID
-- Separação clara de responsabilidades (Controllers, Services, Repositories/Use Cases)
-- Tratamento adequado de erros
-- Configurar ESLint e Prettier
-- Commits organizados e descritivos
+- [x] Aplicar princípios SOLID
+- [x] Separação clara de responsabilidades (Controllers, Services, Repositories/Use Cases)
+- [x] Tratamento adequado de erros
+- [x] Configurar ESLint e Prettier
+- [x] Commits organizados e descritivos
 
 ### Requisitos Técnicos Específicos
 
@@ -121,13 +121,13 @@ Você deve projetar um schema que suporte:
 
 Os itens abaixo são opcionais e darão pontos extras na avaliação:
 
-- **Documentação da API**: Swagger/OpenAPI acessível em `/api-docs`
-- **Testes de Unidade**: Cobertura de 60-70%, mockar dependências externas
-- **Dead Letter Queue (DLQ)**: Mensagens que falharam vão para fila separada
-- **Retry Inteligente**: Sistema de retry com backoff exponencial
-- **Processamento em Batch**: Processar mensagens em lotes
-- **Testes de Integração/Concorrência**: Simular múltiplos usuários simultaneamente
-- **Rate Limiting**: Limitar requisições por IP/usuário
+- [x] **Documentação da API**: Swagger/OpenAPI acessível em `/api-docs`
+- [ ] **Testes de Unidade**: Cobertura de 60-70%, mockar dependências externas
+- [ ] **Dead Letter Queue (DLQ)**: Mensagens que falharam vão para fila separada
+- [ ] **Retry Inteligente**: Sistema de retry com backoff exponencial
+- [ ] **Processamento em Batch**: Processar mensagens em lotes
+- [ ] **Testes de Integração/Concorrência**: Simular múltiplos usuários simultaneamente
+- [ ] **Rate Limiting**: Limitar requisições por IP/usuário
 
 ### Critérios de Avaliação
 

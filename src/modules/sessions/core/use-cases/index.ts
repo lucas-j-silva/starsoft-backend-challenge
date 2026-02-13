@@ -14,6 +14,7 @@ import { CreateSessionUseCase } from './create-session.use-case';
 import { ListSessionsWithPaginationUseCase } from './list-sessions-with-pagination.use-case';
 import { UpdateSessionUseCase } from './update-session.use-case';
 import { GetSessionValuePerSeatUseCase } from './get-session-value-per-seat.use-case';
+import { FindSessionUseCase } from './find-session.use-case';
 
 /**
  * Array of all session use case providers.
@@ -38,4 +39,5 @@ export const SessionsUseCases = [
   ListSessionsWithPaginationUseCase,
   UpdateSessionUseCase,
   GetSessionValuePerSeatUseCase,
+  FindSessionUseCase,
 ];

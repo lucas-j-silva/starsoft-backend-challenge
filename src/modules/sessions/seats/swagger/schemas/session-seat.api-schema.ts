@@ -10,7 +10,7 @@
  */
 
 import { ApiProperty, ApiSchema } from '@nestjs/swagger';
-import { SessionApiSchema } from '../../../core/swagger/schemas/session-api-schema';
+import { SessionApiSchema } from '../../../core/swagger/schemas/session.api-schema';
 
 /**
  * API schema for session seat entity.

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiSchema } from '@nestjs/swagger';
-import { SeatApiSchema } from './seat-api.schema';
+import { SeatApiSchema } from './seat.api-schema';
 import { PaginationMetadataDto } from '../../../../shared/dtos/pagination-metadata.dto';
 
 /**

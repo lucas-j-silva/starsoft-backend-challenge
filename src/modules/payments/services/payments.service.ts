@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   ApprovePaymentDto,
   CreatePaymentDto,
+  FindPaymentDto,
   ListPaymentsWithPaginationAndFilterDto,
 } from '../dtos';
 import { CreatePaymentUseCase } from '../use-cases/create-payment.use-case';
@@ -11,6 +12,7 @@ import { ListPaymentsWithPaginationAndFilterUseCase } from '../use-cases/list-pa
 import { ReservationCreatedMessage } from '../../sessions/seats/events/messages';
 import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { ApprovePaymentUseCase } from '../use-cases/approve-payment.use-case';
+import { FindPaymentUseCase } from '../use-cases/find-payment.use-case';
 
 @Injectable()
 export class PaymentsService {
@@ -19,6 +21,7 @@ export class PaymentsService {
     private readonly handleReservationCreatedUseCase: HandleReservationCreatedUseCase,
     private readonly listPaymentsWithPaginationAndFilterUseCase: ListPaymentsWithPaginationAndFilterUseCase,
     private readonly approvePaymentUseCase: ApprovePaymentUseCase,
+    private readonly findPaymentUseCase: FindPaymentUseCase,
   ) {}
 
   async create(data: CreatePaymentDto): Promise<PaymentSchema> {
@@ -39,5 +42,9 @@ export class PaymentsService {
 
   async approvePayment(data: ApprovePaymentDto): Promise<void> {
     return this.approvePaymentUseCase.execute(data);
+  }
+
+  async findPayment(data: FindPaymentDto): Promise<PaymentSchema> {
+    return this.findPaymentUseCase.execute(data);
   }
 }

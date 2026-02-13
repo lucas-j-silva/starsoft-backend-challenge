@@ -27,7 +27,7 @@ import { ListSeatsWithPaginationQueryDto } from './dtos/list-seats-with-paginati
 import { CreateSeatBodyDto } from './dtos';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { SeatApiSchema } from '../swagger/schemas';
-import { SeatsPaginationResultApiSchema } from '../swagger/schemas/seats-pagination-result-api.schema';
+import { SeatsPaginationResultApiSchema } from '../swagger/schemas/seats-pagination-result.api-schema';
 
 /**
  * Controller for seat-related operations within a room.

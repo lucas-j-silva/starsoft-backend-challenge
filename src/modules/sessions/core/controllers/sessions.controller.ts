@@ -29,11 +29,11 @@ import {
 } from '../dtos';
 import { SessionSchema } from '../schemas';
 import { PaginationResultDto } from '../../../../shared/dtos/pagination-result.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import {
   SessionApiSchema,
   SessionsPaginationResultApiSchema,
-} from '../swagger/schemas/session-api-schema';
+} from '../swagger/schemas/session.api-schema';
 
 /**
  * Controller responsible for handling HTTP requests related to sessions.
@@ -49,6 +49,41 @@ export class SessionsController {
    * @param {SessionsService} sessionsService - The service responsible for session business logic
    */
   constructor(private readonly sessionsService: SessionsService) {}
+
+  /**
+   * Finds a session by its identifier.
+   *
+   * @param {string} id - The unique identifier of the session.
+   * @returns {Promise<SessionSchema>} A promise that resolves to the found session.
+   *
+   * @example
+   * const session = await sessionsController.findSession('550e8400-e29b-41d4-a716-446655440000');
+   * console.log(session); // SessionSchema object
+   */
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Find a session by ID',
+    description: 'Retrieves a session by its unique identifier',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The session has been successfully retrieved.',
+    type: SessionApiSchema,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'The session with the specified ID was not found.',
+  })
+  @ApiParam({
+    name: 'id',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  async findSession(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<SessionSchema> {
+    return this.sessionsService.findSession({ id });
+  }
 
   /**
    * Lists all sessions with pagination support.

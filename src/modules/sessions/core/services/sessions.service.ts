@@ -13,6 +13,7 @@ import { Injectable } from '@nestjs/common';
 
 import {
   CreateSessionDto,
+  FindSessionDto,
   ListSessionsWithPaginationDto,
   UpdateSessionDto,
 } from '../dtos';
@@ -22,6 +23,7 @@ import { ListSessionsWithPaginationUseCase } from '../use-cases/list-sessions-wi
 import { UpdateSessionUseCase } from '../use-cases/update-session.use-case';
 import { CreateSessionUseCase } from '../use-cases/create-session.use-case';
 import { GetSessionValuePerSeatUseCase } from '../use-cases/get-session-value-per-seat.use-case';
+import { FindSessionUseCase } from '../use-cases/find-session.use-case';
 
 /**
  * Service class for managing session operations.
@@ -49,12 +51,15 @@ export class SessionsService {
    * @param {CreateSessionUseCase} createSessionUseCase - Use case for creating sessions.
    * @param {ListSessionsWithPaginationUseCase} listSessionsWithPaginationUseCase - Use case for listing sessions with pagination.
    * @param {UpdateSessionUseCase} updateSessionUseCase - Use case for updating sessions.
+   * @param {GetSessionValuePerSeatUseCase} getSessionValuePerSeatUseCase - Use case for getting session value per seat.
+   * @param {FindSessionUseCase} findSessionUseCase - Use case for finding sessions.
    */
   constructor(
     private readonly createSessionUseCase: CreateSessionUseCase,
     private readonly listSessionsWithPaginationUseCase: ListSessionsWithPaginationUseCase,
     private readonly updateSessionUseCase: UpdateSessionUseCase,
     private readonly getSessionValuePerSeatUseCase: GetSessionValuePerSeatUseCase,
+    private readonly findSessionUseCase: FindSessionUseCase,
   ) {}
 
   /**
@@ -109,7 +114,31 @@ export class SessionsService {
     return this.listSessionsWithPaginationUseCase.execute(data);
   }
 
+  /**
+   * Retrieves the value per seat for a specific session.
+   *
+   * @param {string} id - The unique identifier of the session.
+   * @returns {Promise<number>} A promise that resolves to the value per seat in cents.
+   *
+   * @example
+   * const valuePerSeat = await sessionsService.getSessionValuePerSeat('550e8400-e29b-41d4-a716-446655440000');
+   * console.log(valuePerSeat); // 2500 (in cents)
+   */
   async getSessionValuePerSeat(id: string): Promise<number> {
     return this.getSessionValuePerSeatUseCase.execute({ id });
+  }
+
+  /**
+   * Finds a session by its identifier.
+   *
+   * @param {FindSessionDto} data - The data transfer object containing the session identifier.
+   * @returns {Promise<SessionSchema>} A promise that resolves to the found session.
+   *
+   * @example
+   * const session = await sessionsService.findSession({ id: '550e8400-e29b-41d4-a716-446655440000' });
+   * console.log(session); // SessionSchema object
+   */
+  async findSession(data: FindSessionDto): Promise<SessionSchema> {
+    return this.findSessionUseCase.execute(data);
   }
 }

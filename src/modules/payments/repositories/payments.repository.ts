@@ -18,6 +18,28 @@ export class PaymentsRepository {
     private readonly txHost: TransactionHost<DatabaseTransactionAdapter>,
   ) {}
 
+  async findById(id: string): Promise<PaymentSchema> {
+    const [payment] = await this.txHost.tx
+      .select()
+      .from(paymentsTable)
+      .where(eq(paymentsTable.id, id));
+
+    if (!payment) throw new PaymentNotFoundException();
+
+    return payment;
+  }
+
+  async findByIdAndUserId(id: string, userId: string): Promise<PaymentSchema> {
+    const [payment] = await this.txHost.tx
+      .select()
+      .from(paymentsTable)
+      .where(and(eq(paymentsTable.id, id), eq(paymentsTable.userId, userId)));
+
+    if (!payment) throw new PaymentNotFoundException();
+
+    return payment;
+  }
+
   async findByIdOrExternalId(id: string): Promise<PaymentSchema> {
     const [payment] = await this.txHost.tx
       .select()

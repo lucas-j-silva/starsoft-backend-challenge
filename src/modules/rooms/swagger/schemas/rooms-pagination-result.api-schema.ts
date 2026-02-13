@@ -9,7 +9,7 @@
  * @module rooms-pagination-result-api.schema
  */
 
-import { RoomApiSchema } from './room-api.schema';
+import { RoomApiSchema } from './room.api-schema';
 import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { PaginationMetadataDto } from '../../../../shared/dtos/pagination-metadata.dto';
 

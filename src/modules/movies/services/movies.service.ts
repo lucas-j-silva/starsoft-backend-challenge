@@ -1,7 +1,12 @@
-import { CreateMovieDto } from '../dtos';
+import { CreateMovieDto, ListMoviesWithPaginationDto } from '../dtos';
 import { MovieSchema } from '../schemas';
-import { CreateMovieUseCase, FindMovieByIdUseCase } from '../use-cases';
+import {
+  CreateMovieUseCase,
+  FindMovieByIdUseCase,
+  ListMoviesWithPaginationUseCase,
+} from '../use-cases';
 import { Injectable } from '@nestjs/common';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 
 /**
  * Service class responsible for managing movie-related operations.
@@ -34,7 +39,27 @@ export class MoviesService {
   constructor(
     private readonly createMovieUseCase: CreateMovieUseCase,
     private readonly findMovieByIdUseCase: FindMovieByIdUseCase,
+    private readonly listMoviesWithPaginationUseCase: ListMoviesWithPaginationUseCase,
   ) {}
+
+  /**
+   * Lists movies with pagination support.
+   * Delegates the retrieval logic to the ListMoviesWithPaginationUseCase.
+   *
+   * @async
+   * @param {ListMoviesWithPaginationDto} dto - The data transfer object containing pagination parameters.
+   * @returns {Promise<PaginationResultDto<MovieSchema>>} A promise that resolves to a paginated result containing movies and metadata.
+   *
+   * @example
+   * const result = await moviesService.listWithPagination({ page: 1, limit: 10 });
+   * console.log(result.data); // Array of MovieSchema
+   * console.log(result.metadata); // Pagination metadata
+   */
+  async listWithPagination(
+    dto: ListMoviesWithPaginationDto,
+  ): Promise<PaginationResultDto<MovieSchema>> {
+    return this.listMoviesWithPaginationUseCase.execute(dto);
+  }
 
   /**
    * Creates a new movie entity.

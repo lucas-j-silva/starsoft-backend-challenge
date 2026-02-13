@@ -28,8 +28,8 @@ import {
   ApiParam,
   ApiResponse,
 } from '@nestjs/swagger';
-import { RoomApiSchema } from '../swagger/schemas/room-api.schema';
-import { RoomsPaginationResultApiSchema } from '../swagger/schemas/rooms-pagination-result-api.schema';
+import { RoomApiSchema } from '../swagger/schemas/room.api-schema';
+import { RoomsPaginationResultApiSchema } from '../swagger/schemas/rooms-pagination-result.api-schema';
 
 /**
  * Controller responsible for handling room-related HTTP requests.
