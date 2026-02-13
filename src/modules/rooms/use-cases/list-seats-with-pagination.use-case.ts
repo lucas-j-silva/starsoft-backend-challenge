@@ -8,7 +8,7 @@
  * @module list-seats-with-pagination.use-case
  */
 
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { SeatsRepository } from '../repositories';
 import { IListSeatsWithPaginationUseCase } from '../interfaces';
 import { SeatSchema } from '../schemas';

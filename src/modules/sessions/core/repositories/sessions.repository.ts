@@ -14,12 +14,12 @@ import {
   SessionNotFoundException,
   UnableToCreateSessionException,
 } from '../exceptions';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
-import { PaginationDto } from 'src/shared/dtos/pagination.dto';
 import { eq } from 'drizzle-orm';
 import { UnableToUpdateSessionException } from '../exceptions/unable-to-update-session.exception';
 import { TransactionHost } from '@nestjs-cls/transactional';
-import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
+import { DatabaseTransactionAdapter } from '../../../../shared/database/database.provider';
+import { PaginationDto } from '../../../../shared/dtos/pagination.dto';
+import { PaginationResultDto } from '../../../../shared/dtos/pagination-result.dto';
 
 /**
  * Repository class for managing session entities.

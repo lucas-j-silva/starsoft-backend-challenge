@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AuthModule as BetterAuthModule } from '@thallesp/nestjs-better-auth';
-import { BetterAuth } from 'src/shared/auth/better-auth';
-import { DatabaseModule } from 'src/shared/database/database.module';
+import { BetterAuth } from '../../shared/auth/better-auth';
+import { DatabaseModule } from '../../shared/database/database.module';
 import {
   DatabaseClient,
   DB_PROVIDER,
-} from 'src/shared/database/database.provider';
+} from '../../shared/database/database.provider';
 
 /**
  * Authentication module that integrates Better Auth with NestJS.

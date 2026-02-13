@@ -5,7 +5,7 @@ import {
   session,
   user,
   verification,
-} from 'src/modules/auth/schemas/auth.schema';
+} from '../../modules/auth/schemas/auth.schema';
 import { openAPI } from 'better-auth/plugins';
 import { DatabaseClient } from '../database/database.provider';
 

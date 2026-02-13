@@ -7,7 +7,7 @@
  * @module unable-to-create-session.exception
  */
 
-import { CustomException } from 'src/shared/exceptions/custom.exception';
+import { CustomException } from '../../../../shared/exceptions/custom.exception';
 import { Logger } from '@nestjs/common';
 
 /**

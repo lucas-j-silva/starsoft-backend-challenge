@@ -8,17 +8,17 @@
  * @module seats.schema
  */
 
-import { UUIDGeneratorHelper } from 'src/shared/helpers';
+import { UUIDGeneratorHelper } from '../../../shared/helpers';
 import {
   uuid,
   pgTable,
   timestamp,
   varchar,
   integer,
+  unique,
+  index,
 } from 'drizzle-orm/pg-core';
 import { roomsTable } from './rooms.schema';
-import { unique } from 'drizzle-orm/pg-core';
-import { index } from 'drizzle-orm/pg-core';
 
 /**
  * Seats table schema - stores individual seat information within rooms.

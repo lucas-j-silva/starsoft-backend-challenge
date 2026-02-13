@@ -4,8 +4,7 @@ import { eq } from 'drizzle-orm';
 import { MovieNotFoundException } from '../exceptions';
 import { UnableToCreateMovieException } from '../exceptions/unable-to-create-movie.exception';
 import { TransactionHost } from '@nestjs-cls/transactional';
-import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
-
+import { DatabaseTransactionAdapter } from '../../../shared/database/database.provider';
 /**
  * Repository class for managing movie data persistence operations.
  * Provides methods for CRUD operations on the movies table using Drizzle ORM.

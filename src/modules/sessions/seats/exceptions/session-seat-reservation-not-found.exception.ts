@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { CustomException } from 'src/shared/exceptions/custom.exception';
+import { CustomException } from '../../../../shared/exceptions/custom.exception';
 
 export class SessionSeatReservationNotFoundException extends CustomException {
   private readonly logger = new Logger(

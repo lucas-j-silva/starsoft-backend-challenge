@@ -10,7 +10,6 @@
  */
 
 import {
-  Body,
   Controller,
   Get,
   HttpCode,

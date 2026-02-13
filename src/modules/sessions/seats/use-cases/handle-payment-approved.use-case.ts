@@ -4,7 +4,7 @@ import {
   SessionSeatReservationsRepository,
   SessionSeatsRepository,
 } from '../repositories';
-import { PaymentApprovedMessage } from 'src/modules/payments/events/messages';
+import { PaymentApprovedMessage } from '../../../payments/events/messages';
 import { SessionSeatsCacheService } from '../cache/services';
 import { Transactional } from '@nestjs-cls/transactional';
 

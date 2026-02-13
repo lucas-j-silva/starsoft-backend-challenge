@@ -17,7 +17,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { UnableToCreateSessionSeatReservationException } from '../exceptions/unable-to-create-session-seat-reservation.exception';
 import { TransactionHost } from '@nestjs-cls/transactional';
-import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
+import { DatabaseTransactionAdapter } from '../../../../shared/database/database.provider';
 import { eq, lt } from 'drizzle-orm';
 import { SessionSeatReservationNotFoundException } from '../exceptions/session-seat-reservation-not-found.exception';
 

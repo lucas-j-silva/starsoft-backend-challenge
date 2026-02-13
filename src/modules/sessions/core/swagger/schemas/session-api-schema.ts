@@ -9,7 +9,7 @@
  */
 
 import { ApiProperty, ApiSchema } from '@nestjs/swagger';
-import { PaginationMetadataDto } from 'src/shared/dtos/pagination-metadata.dto';
+import { PaginationMetadataDto } from '../../../../../shared/dtos/pagination-metadata.dto';
 
 /**
  * Swagger API schema for session entity responses.

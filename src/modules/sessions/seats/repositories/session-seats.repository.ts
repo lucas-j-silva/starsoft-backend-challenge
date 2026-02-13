@@ -13,20 +13,19 @@ import {
   SessionSeatInsertSchema,
   SessionSeatSchema,
   SessionSeatSchemaWithRelations,
+  sessionSeatsTable,
 } from '../schemas/session-seats.schema';
 import {
   UnableToCreateBulkSessionSeatsException,
   UnableToCreateSessionSeatException,
+  SessionSeatNotFoundException,
 } from '../exceptions';
-import { sessionSeatsTable } from '../schemas/session-seats.schema';
 import { Injectable } from '@nestjs/common';
-import { and, asc, eq } from 'drizzle-orm';
-import { seatsTable } from 'src/modules/rooms/schemas';
-import { getTableColumns } from 'drizzle-orm';
-import { SessionSeatNotFoundException } from '../exceptions';
+import { and, asc, eq, getTableColumns } from 'drizzle-orm';
+import { seatsTable } from '../../../rooms/schemas';
 import { sessionsTable } from '../../core/schemas';
 import { TransactionHost } from '@nestjs-cls/transactional';
-import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
+import { DatabaseTransactionAdapter } from '../../../../shared/database/database.provider';
 import { UnableToUpdateSessionSeatException } from '../exceptions/unable-to-update-session-seat.exception';
 
 /**

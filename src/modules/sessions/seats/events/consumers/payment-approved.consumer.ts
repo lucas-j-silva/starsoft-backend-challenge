@@ -1,7 +1,7 @@
 import { Controller, Logger, ValidationPipe } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import { PaymentsMessagesTopics } from 'src/modules/payments/events/enums/payments-messages-topics.enum';
-import { PaymentApprovedMessage } from 'src/modules/payments/events/messages';
+import { PaymentsMessagesTopics } from '../../../../payments/events/enums/payments-messages-topics.enum';
+import { PaymentApprovedMessage } from '../../../../payments/events/messages';
 import { SessionSeatsService } from '../../services';
 import { SessionSeatNotFoundException } from '../../exceptions';
 import { SessionSeatReservationNotFoundException } from '../../exceptions/session-seat-reservation-not-found.exception';

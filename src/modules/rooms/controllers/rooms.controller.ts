@@ -20,7 +20,7 @@ import {
 } from '@nestjs/common';
 import { RoomsService } from '../services/rooms.service';
 import { RoomSchema } from '../schemas';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { CreateRoomDto, ListRoomsWithPaginationDto } from '../dtos';
 import {
   ApiCookieAuth,

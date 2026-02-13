@@ -1,6 +1,6 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
-import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
+import { DatabaseTransactionAdapter } from '../../../shared/database/database.provider';
 import {
   CreatePaymentDto,
   ListPaymentsWithPaginationAndFilterDto,
@@ -9,7 +9,7 @@ import { PaymentInsertSchema, PaymentSchema, paymentsTable } from '../schemas';
 import { UnableToCreatePaymentException } from '../exceptions/unable-to-create-payment.exception';
 import { and, desc, eq, lt, or, SQL } from 'drizzle-orm';
 import { PaymentStatus } from '../enums/payment-status.enum';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { PaymentNotFoundException } from '../exceptions';
 
 @Injectable()

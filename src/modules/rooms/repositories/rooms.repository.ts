@@ -11,10 +11,10 @@ import { Injectable } from '@nestjs/common';
 import { UnableToCreateRoomException } from '../exceptions';
 import { eq } from 'drizzle-orm';
 import { RoomNotFoundException } from '../exceptions/room-not-found.exception';
-import { PaginationDto } from 'src/shared/dtos/pagination.dto';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationDto } from '../../../shared/dtos/pagination.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { TransactionHost } from '@nestjs-cls/transactional';
-import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
+import { DatabaseTransactionAdapter } from '../../../shared/database/database.provider';
 
 /**
  * Repository class for managing room data persistence operations.

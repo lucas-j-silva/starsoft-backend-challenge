@@ -9,9 +9,9 @@
  */
 
 import { integer, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { UUIDGeneratorHelper } from 'src/shared/helpers';
-import { moviesTable } from 'src/modules/movies/schemas/movies.schema';
-import { roomsTable } from 'src/modules/rooms/schemas/rooms.schema';
+import { UUIDGeneratorHelper } from '../../../../shared/helpers';
+import { moviesTable } from '../../../movies/schemas/movies.schema';
+import { roomsTable } from '../../../rooms/schemas/rooms.schema';
 
 /**
  * Database table schema for sessions.

@@ -1,7 +1,7 @@
 import { Controller, Logger, ValidationPipe } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import { ReservationCreatedMessage } from 'src/modules/sessions/seats/events/messages';
-import { SessionSeatsMessagesTopics } from 'src/modules/sessions/seats/events/enums';
+import { ReservationCreatedMessage } from '../../../sessions/seats/events/messages';
+import { SessionSeatsMessagesTopics } from '../../../sessions/seats/events/enums';
 import { PaymentsService } from '../../services/payments.service';
 
 @Controller()

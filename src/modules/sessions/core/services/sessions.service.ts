@@ -17,7 +17,7 @@ import {
   UpdateSessionDto,
 } from '../dtos';
 import { SessionSchema } from '../schemas';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationResultDto } from '../../../../shared/dtos/pagination-result.dto';
 import { ListSessionsWithPaginationUseCase } from '../use-cases/list-sessions-with-pagination.use-case';
 import { UpdateSessionUseCase } from '../use-cases/update-session.use-case';
 import { CreateSessionUseCase } from '../use-cases/create-session.use-case';

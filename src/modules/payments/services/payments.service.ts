@@ -8,8 +8,8 @@ import { CreatePaymentUseCase } from '../use-cases/create-payment.use-case';
 import { PaymentSchema } from '../schemas';
 import { HandleReservationCreatedUseCase } from '../use-cases/handle-reservation-created.use-case';
 import { ListPaymentsWithPaginationAndFilterUseCase } from '../use-cases/list-payments-with-pagination-and-filter.use-case';
-import { ReservationCreatedMessage } from 'src/modules/sessions/seats/events/messages';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { ReservationCreatedMessage } from '../../sessions/seats/events/messages';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { ApprovePaymentUseCase } from '../use-cases/approve-payment.use-case';
 
 @Injectable()

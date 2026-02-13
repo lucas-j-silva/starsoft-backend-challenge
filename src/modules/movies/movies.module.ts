@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MoviesUseCases } from './use-cases';
 import { MoviesService } from './services';
-import { DatabaseModule } from 'src/shared/database/database.module';
+import { DatabaseModule } from '../../shared/database/database.module';
 import { MoviesController } from './controllers';
 import { MoviesRepository } from './repositories';
 

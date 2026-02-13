@@ -10,7 +10,7 @@
  */
 
 import { IsNotEmpty, IsUUID } from 'class-validator';
-import { PaginationDto } from 'src/shared/dtos/pagination.dto';
+import { PaginationDto } from '../../../shared/dtos/pagination.dto';
 
 /**
  * DTO for listing seats with pagination support.

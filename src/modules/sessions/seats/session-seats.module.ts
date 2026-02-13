@@ -11,8 +11,8 @@
  */
 
 import { Module } from '@nestjs/common';
-import { CacheModule } from 'src/shared/cache/cache.module';
-import { DatabaseModule } from 'src/shared/database/database.module';
+import { CacheModule } from '../../../shared/cache/cache.module';
+import { DatabaseModule } from '../../../shared/database/database.module';
 import { SessionSeatsController } from './controllers';
 import { SessionSeatsUseCases } from './use-cases';
 import {

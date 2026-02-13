@@ -9,15 +9,14 @@
  * @module rooms.service
  */
 
-import { CreateRoomDto } from '../dtos';
+import { CreateRoomDto, ListRoomsWithPaginationDto } from '../dtos';
 import { RoomSchema } from '../schemas';
 
 import { CreateRoomUseCase } from '../use-cases/create-room.use-case';
 import { FindRoomByIdUseCase } from '../use-cases/find-room-by-id.use-case';
 import { ListRoomsWithPaginationUseCase } from '../use-cases/list-rooms-with-pagination.use-case';
 
-import { ListRoomsWithPaginationDto } from '../dtos';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { Injectable } from '@nestjs/common';
 
 /**

@@ -8,7 +8,7 @@
  * @module list-rooms-with-pagination.dto
  */
 
-import { PaginationDto } from 'src/shared/dtos/pagination.dto';
+import { PaginationDto } from '../../../shared/dtos/pagination.dto';
 
 /**
  * Data Transfer Object for listing rooms with pagination support.

@@ -15,13 +15,16 @@ import {
   SessionSeatSchema,
   SessionSeatSchemaWithRelations,
 } from '../schemas';
-import { CreateManySessionSeatsDto, ReserveSessionSeatDto } from '../dtos';
+import {
+  CreateManySessionSeatsDto,
+  ReserveSessionSeatDto,
+  ListSessionSeatsDto,
+} from '../dtos';
 import { ListSessionSeatsUseCase } from '../use-cases/list-session-seats.use-case';
 import { ReserveSessionSeatUseCase } from '../use-cases/reserve-session-seat.use-case';
 import { CreateManySessionSeatsUseCase } from '../use-cases/create-many-session-seats.use-case';
 import { HandlePaymentApprovedUseCase } from '../use-cases/handle-payment-approved.use-case';
-import { PaymentApprovedMessage } from 'src/modules/payments/events/messages';
-import { ListSessionSeatsDto } from '../dtos';
+import { PaymentApprovedMessage } from '../../../payments/events/messages';
 
 /**
  * Service for session seat management operations.

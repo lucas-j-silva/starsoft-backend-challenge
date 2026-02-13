@@ -13,8 +13,8 @@ import { SessionSchema } from '../schemas';
 import { ICreateSessionUseCase } from '../interfaces';
 import { Injectable } from '@nestjs/common';
 import { SessionsRepository } from '../repositories';
-import { RoomsService, SeatsService } from 'src/modules/rooms/services';
-import { MoviesService } from 'src/modules/movies/services';
+import { RoomsService, SeatsService } from '../../../rooms/services';
+import { MoviesService } from '../../../movies/services';
 import { NotEnoughSeatsException } from '../exceptions';
 import { SessionSeatsService } from '../../seats/services';
 

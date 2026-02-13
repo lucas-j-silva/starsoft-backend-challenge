@@ -10,7 +10,7 @@
  * @module rooms.module
  */
 
-import { DatabaseModule } from 'src/shared/database/database.module';
+import { DatabaseModule } from '../../shared/database/database.module';
 import { RoomsUseCases, SeatsUseCases } from './use-cases';
 import { RoomsRepository, SeatsRepository } from './repositories';
 import { RoomsService, SeatsService } from './services';

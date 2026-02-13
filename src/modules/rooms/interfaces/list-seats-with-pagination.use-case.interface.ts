@@ -10,7 +10,7 @@
  */
 
 import { ListSeatsWithPaginationDto } from '../dtos';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { SeatSchema } from '../schemas';
 
 /**

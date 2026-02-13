@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
-import { PaginationDto } from 'src/shared/dtos/pagination.dto';
+import { PaginationDto } from '../../../shared/dtos/pagination.dto';
 import { PaymentStatus } from '../enums/payment-status.enum';
 import { PickType } from '@nestjs/swagger';
 

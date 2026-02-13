@@ -10,13 +10,13 @@
  */
 
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from 'src/shared/database/database.module';
+import { DatabaseModule } from '../../../shared/database/database.module';
 import { SessionsUseCases } from './use-cases';
 import { SessionsRepository } from './repositories';
 import { SessionsService } from './services';
 import { SessionsController } from './controllers';
-import { RoomsModule } from 'src/modules/rooms/rooms.module';
-import { MoviesModule } from 'src/modules/movies/movies.module';
+import { RoomsModule } from '../../rooms/rooms.module';
+import { MoviesModule } from '../../movies/movies.module';
 import { SessionSeatsModule } from '../seats/session-seats.module';
 
 /**

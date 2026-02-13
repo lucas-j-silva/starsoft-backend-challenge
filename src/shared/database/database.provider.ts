@@ -1,11 +1,10 @@
 import { TransactionalAdapterDrizzleOrm } from '@nestjs-cls/transactional-adapter-drizzle-orm';
-import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 
 export const DB_PROVIDER = 'DB_PROVIDER';
 
-const logger = new Logger(DB_PROVIDER);
+//  const logger = new Logger(DB_PROVIDER);
 
 export const DRIZZLE_PROVIDER = {
   provide: DB_PROVIDER,

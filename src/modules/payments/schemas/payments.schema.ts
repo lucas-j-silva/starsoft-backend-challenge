@@ -8,8 +8,8 @@ import {
   unique,
   index,
 } from 'drizzle-orm/pg-core';
-import { user } from 'src/modules/auth/schemas/auth.schema';
-import { UUIDGeneratorHelper } from 'src/shared/helpers';
+import { user } from '../../auth/schemas/auth.schema';
+import { UUIDGeneratorHelper } from '../../../shared/helpers';
 import { PaymentStatus } from '../enums/payment-status.enum';
 
 export const paymentStatus = pgEnum('payment_status', PaymentStatus);

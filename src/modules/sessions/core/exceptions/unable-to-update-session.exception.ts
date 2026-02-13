@@ -7,7 +7,7 @@
  * @module unable-to-update-session.exception
  */
 
-import { CustomException } from 'src/shared/exceptions/custom.exception';
+import { CustomException } from '../../../../shared/exceptions/custom.exception';
 import { Logger } from '@nestjs/common';
 
 /**

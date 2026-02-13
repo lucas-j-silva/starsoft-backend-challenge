@@ -16,7 +16,7 @@ import {
 
 import { SeatSchema } from '../schemas';
 import { Injectable } from '@nestjs/common';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 
 import { CreateSeatUseCase } from '../use-cases/create-seat.use-case';
 import { ListSeatsWithPaginationUseCase } from '../use-cases/list-seats-with-pagination.use-case';

@@ -11,7 +11,7 @@
 
 import { RoomApiSchema } from './room-api.schema';
 import { ApiProperty, ApiSchema } from '@nestjs/swagger';
-import { PaginationMetadataDto } from 'src/shared/dtos/pagination-metadata.dto';
+import { PaginationMetadataDto } from '../../../../shared/dtos/pagination-metadata.dto';
 
 /**
  * Swagger API schema representing a paginated result of room entities.

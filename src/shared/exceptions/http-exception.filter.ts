@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
-import { Catch, ExceptionFilter, ArgumentsHost } from '@nestjs/common';
-import { HttpException } from '@nestjs/common';
+import {
+  Catch,
+  ExceptionFilter,
+  ArgumentsHost,
+  HttpException,
+} from '@nestjs/common';
 import { I18nService } from 'nestjs-i18n';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { CustomException } from './custom.exception';
 
 @Catch(CustomException)

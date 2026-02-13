@@ -9,11 +9,10 @@
  * @module session-seat-reservations.schema
  */
 
-import { uuid } from 'drizzle-orm/pg-core';
-import { pgTable, text, index, timestamp } from 'drizzle-orm/pg-core';
-import { UUIDGeneratorHelper } from 'src/shared/helpers';
+import { uuid, pgTable, text, index, timestamp } from 'drizzle-orm/pg-core';
+import { UUIDGeneratorHelper } from '../../../../shared/helpers';
 import { sessionSeatsTable } from './session-seats.schema';
-import { user } from 'src/modules/auth/schemas/auth.schema';
+import { user } from '../../../auth/schemas/auth.schema';
 
 /**
  * Database table schema for session seat reservations.

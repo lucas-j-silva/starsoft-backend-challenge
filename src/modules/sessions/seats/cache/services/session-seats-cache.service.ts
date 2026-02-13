@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { CacheClientService } from 'src/shared/cache/cache-client.service';
+import { CacheClientService } from '../../../../../shared/cache/cache-client.service';
 
 /**
  * Service responsible for caching session seat reservations and availability.

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { SeatInsertSchema, SeatSchema, seatsTable } from '../schemas';
 import { UnableToCreateSeatException } from '../exceptions/unable-to-create-seat.exception';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
-import { PaginationDto } from 'src/shared/dtos/pagination.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
+import { PaginationDto } from '../../../shared/dtos/pagination.dto';
 import { and, eq } from 'drizzle-orm';
 import { SeatNotFoundException } from '../exceptions/seat-not-found.exception';
 import { TransactionHost } from '@nestjs-cls/transactional';
-import { DatabaseTransactionAdapter } from 'src/shared/database/database.provider';
+import { DatabaseTransactionAdapter } from '../../../shared/database/database.provider';
 
 @Injectable()
 export class SeatsRepository {

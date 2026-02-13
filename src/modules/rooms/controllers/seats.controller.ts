@@ -21,13 +21,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { SeatsService } from '../services/seats.service';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { SeatSchema } from '../schemas';
 import { ListSeatsWithPaginationQueryDto } from './dtos/list-seats-with-pagination.dto';
 import { CreateSeatBodyDto } from './dtos';
-import { ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { SeatApiSchema } from '../swagger/schemas';
-import { ApiResponse } from '@nestjs/swagger';
 import { SeatsPaginationResultApiSchema } from '../swagger/schemas/seats-pagination-result-api.schema';
 
 /**

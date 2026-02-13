@@ -8,7 +8,7 @@
  */
 
 import { Logger } from '@nestjs/common';
-import { CustomException } from 'src/shared/exceptions/custom.exception';
+import { CustomException } from '../../../shared/exceptions/custom.exception';
 
 /**
  * Custom exception thrown when a room cannot be created in the database.

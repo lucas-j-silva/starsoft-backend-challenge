@@ -10,7 +10,7 @@
 import { ListRoomsWithPaginationDto } from '../dtos';
 import { IListRoomsWithPaginationUseCase } from '../interfaces';
 import { RoomsRepository } from '../repositories';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { RoomSchema } from '../schemas';
 import { Injectable } from '@nestjs/common';
 

@@ -1,5 +1,5 @@
 import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-import { UUIDGeneratorHelper } from 'src/shared/helpers';
+import { UUIDGeneratorHelper } from '../../../shared/helpers';
 
 export const moviesTable = pgTable('movies', {
   id: uuid('id')

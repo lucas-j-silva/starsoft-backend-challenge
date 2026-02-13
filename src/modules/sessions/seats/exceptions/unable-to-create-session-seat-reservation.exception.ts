@@ -8,7 +8,7 @@
  * @module unable-to-create-session-seat-reservation.exception
  */
 import { Logger } from '@nestjs/common';
-import { CustomException } from 'src/shared/exceptions/custom.exception';
+import { CustomException } from '../../../../shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when a session seat reservation cannot be created.

@@ -9,7 +9,7 @@
  * @module session-seats.schema
  */
 
-import { UUIDGeneratorHelper } from 'src/shared/helpers';
+import { UUIDGeneratorHelper } from '../../../../shared/helpers';
 import {
   pgTable,
   uuid,
@@ -18,9 +18,9 @@ import {
   boolean,
   text,
 } from 'drizzle-orm/pg-core';
-import { SeatSchema, seatsTable } from 'src/modules/rooms/schemas/seats.schema';
+import { SeatSchema, seatsTable } from '../../../rooms/schemas/seats.schema';
 import { SessionSchema, sessionsTable } from '../../core/schemas';
-import { user, UserSchema } from 'src/modules/auth/schemas/auth.schema';
+import { user, UserSchema } from '../../../auth/schemas/auth.schema';
 
 /**
  * Database table schema for session seats.

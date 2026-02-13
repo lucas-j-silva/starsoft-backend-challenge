@@ -10,9 +10,8 @@
  * @module create-seat-body.dto
  */
 
-import { PickType } from '@nestjs/swagger';
+import { PickType, ApiSchema } from '@nestjs/swagger';
 import { CreateSeatDto } from '../../dtos';
-import { ApiSchema } from '@nestjs/swagger';
 /**
  * Data Transfer Object for the seat creation request body.
  *

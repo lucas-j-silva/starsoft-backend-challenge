@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { applyDecorators } from '@nestjs/common';
 import { ValidateIf } from 'class-validator';
 

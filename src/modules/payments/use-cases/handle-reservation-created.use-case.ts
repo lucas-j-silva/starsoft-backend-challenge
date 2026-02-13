@@ -1,7 +1,7 @@
-import { ReservationCreatedMessage } from 'src/modules/sessions/seats/events/messages';
+import { ReservationCreatedMessage } from '../../sessions/seats/events/messages';
 import { IHandleReservationCreatedUseCase } from '../interfaces/handle-reservation-created.use-case-interface';
 import { PaymentsRepository } from '../repositories/payments.repository';
-import { SessionsService } from 'src/modules/sessions/core/services';
+import { SessionsService } from '../../sessions/core/services';
 import { PaymentsProducer } from '../events/producers';
 import { Injectable } from '@nestjs/common';
 

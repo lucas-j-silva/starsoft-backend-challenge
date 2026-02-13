@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
+import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { PaymentsRepository } from '../repositories/payments.repository';
 import { IListPaymentsWithPaginationAndFilterUseCase } from '../interfaces';
 import { PaymentSchema } from '../schemas';

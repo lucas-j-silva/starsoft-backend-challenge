@@ -8,9 +8,8 @@
  * @module rooms.schema
  */
 
-import { pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { UUIDGeneratorHelper } from 'src/shared/helpers';
-import { varchar } from 'drizzle-orm/pg-core';
+import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { UUIDGeneratorHelper } from '../../../shared/helpers';
 
 /**
  * Rooms table schema - stores cinema room information.

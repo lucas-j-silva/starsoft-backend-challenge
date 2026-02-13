@@ -24,7 +24,7 @@ import {
 } from '../exceptions';
 import { SessionSeatsProducer } from '../events/producers';
 import { Transactional } from '@nestjs-cls/transactional';
-import { CacheLockService } from 'src/shared/cache/cache-lock.service';
+import { CacheLockService } from '../../../../shared/cache/cache-lock.service';
 import { UnableToReserveSessionSeatException } from '../exceptions/unable-to-reserve-session-seat.exception';
 
 /**
@@ -159,14 +159,9 @@ export class ReserveSessionSeatUseCase implements IReserveSessionSeatUseCase {
       );
 
       return reservation;
-    } catch (error) {
-      await this.cacheLockService.releaseLock(
-        `locks:reservation:${data.sessionSeatId}`,
-        lock.value,
-      );
-
-      throw error;
     } finally {
+      console.log('releasing lock f');
+
       await this.cacheLockService.releaseLock(
         `locks:reservation:${data.sessionSeatId}`,
         lock.value,

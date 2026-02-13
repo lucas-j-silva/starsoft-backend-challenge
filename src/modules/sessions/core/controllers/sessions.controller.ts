@@ -22,10 +22,13 @@ import {
   Query,
 } from '@nestjs/common';
 import { SessionsService } from '../services/sessions.service';
-import { CreateSessionDto, ListSessionsWithPaginationDto } from '../dtos';
+import {
+  CreateSessionDto,
+  ListSessionsWithPaginationDto,
+  UpdateSessionBodyDto,
+} from '../dtos';
 import { SessionSchema } from '../schemas';
-import { PaginationResultDto } from 'src/shared/dtos/pagination-result.dto';
-import { UpdateSessionBodyDto } from '../dtos';
+import { PaginationResultDto } from '../../../../shared/dtos/pagination-result.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import {
   SessionApiSchema,
