@@ -30,12 +30,12 @@ import {
  *
  * @example
  * // Example usage in a controller
- * const createSessionDto: CreateSessionDto = {
+ * const dto = new CreateSessionDto({
  *   movieId: '550e8400-e29b-41d4-a716-446655440000',
  *   roomId: '660e8400-e29b-41d4-a716-446655440001',
  *   valuePerSeatInCents: 2500,
  *   startTime: new Date('2024-01-15T19:00:00Z'),
- * };
+ * });
  */
 export class CreateSessionDto {
   /**
@@ -82,4 +82,13 @@ export class CreateSessionDto {
   @IsOptional({ message: 'validation.IS_OPTIONAL' })
   @IsBoolean({ message: 'validation.INVALID_BOOLEAN' })
   copySeats?: boolean;
+
+  /**
+   * Creates an instance of CreateSessionDto.
+   *
+   * @param {Partial<CreateSessionDto>} data - Partial data to initialize the DTO.
+   */
+  constructor(data: Partial<CreateSessionDto>) {
+    Object.assign(this, data);
+  }
 }

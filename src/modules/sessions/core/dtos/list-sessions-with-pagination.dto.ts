@@ -24,9 +24,9 @@ import { PaginationDto } from '../../../../shared/dtos/pagination.dto';
  *
  * @example
  * // Example usage in a controller
- * const paginationDto: ListSessionsWithPaginationDto = {
+ * const dto = new ListSessionsWithPaginationDto({
  *   page: 1,
  *   limit: 10,
- * };
+ * });
  */
 export class ListSessionsWithPaginationDto extends PaginationDto {}

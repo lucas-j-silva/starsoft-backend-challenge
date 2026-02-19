@@ -53,10 +53,6 @@ export class SessionSeatsController {
    * @returns {Promise<SessionSeatSchemaWithRelations[]>} - Promise resolving with an array of seats (with relations) for the session.
    *
    * @throws {NotFoundException} If the session is not found.
-   *
-   * @example
-   * // HTTP Request:
-   * GET /sessions/550e8400-e29b-41d4-a716-446655440000/seats
    */
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -83,6 +79,15 @@ export class SessionSeatsController {
     return this.sessionSeatsService.list({ id: sessionId });
   }
 
+  /**
+   * Lists all seats for the current authenticated user in a specific session.
+   *
+   * @param {string} sessionId - The UUID of the session to list seats for.
+   * @param {UserSession} session - The authenticated user's session containing user information.
+   * @returns {Promise<SessionSeatSchemaWithRelations[]>} - Promise resolving with an array of seats (with relations) belonging to the current user for the session.
+   *
+   * @throws {NotFoundException} If the session is not found.
+   */
   @Get('me')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -123,10 +128,6 @@ export class SessionSeatsController {
    * @throws {NotFoundException} If the session seat is not found.
    * @throws {BadRequestException} If the seat is not available.
    * @throws {ConflictException} If the session seat is already reserved.
-   *
-   * @example
-   * // HTTP Request:
-   * POST /sessions/550e8400-e29b-41d4-a716-446655440000/seats/550e8400-e29b-41d4-a716-446655440111/reserve
    */
   @Post(':sessionSeatId/reserve')
   @HttpCode(HttpStatus.OK)

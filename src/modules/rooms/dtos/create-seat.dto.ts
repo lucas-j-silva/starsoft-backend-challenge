@@ -9,7 +9,7 @@
  * @module create-seat.dto
  */
 
-import { ApiProperty, ApiSchema } from '@nestjs/swagger';
+import { ApiProperty, ApiSchema, PickType } from '@nestjs/swagger';
 import {
   IsInt,
   IsNotEmpty,
@@ -100,3 +100,29 @@ export class CreateSeatDto {
     Object.assign(this, data);
   }
 }
+
+/**
+ * Data Transfer Object for the seat creation request body.
+ *
+ * @description
+ * Extends a subset of CreateSeatDto, picking only 'row' and 'column' fields.
+ * The roomId is excluded as it is provided via the URL path parameter.
+ *
+ * @class CreateSeatBodyDto
+ * @extends {PickType<CreateSeatDto, 'row' | 'column'>}
+ *
+ * @example
+ * // Request body for creating seat A12
+ * {
+ *   "row": "A",
+ *   "column": 12
+ * }
+ */
+@ApiSchema({
+  name: 'CreateSeatBodyDto',
+  description: 'Data Transfer Object for the seat creation request body',
+})
+export class CreateSeatBodyDto extends PickType(CreateSeatDto, [
+  'row',
+  'column',
+]) {}

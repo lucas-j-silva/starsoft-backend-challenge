@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Controller for managing movies.
+ *
+ * @description
+ * This file contains the controller responsible for handling HTTP requests
+ * related to movie operations. It provides endpoints for creating and retrieving
+ * movie resources.
+ *
+ * @module movies.controller
+ */
+
 import {
   Body,
   Controller,
@@ -23,10 +34,6 @@ import { MoviesPaginationResultApiSchema } from '../swagger/schemas/movies-pagin
  *
  * @class MoviesController
  * @decorator @Controller('movies') - Maps this controller to the '/movies' route prefix.
- *
- * @example
- * // POST /movies - Create a new movie
- * // GET /movies/:id - Retrieve a movie by its ID
  */
 @Controller('movies')
 export class MoviesController {
@@ -71,11 +78,6 @@ export class MoviesController {
    * @param {CreateMovieDto} createMovieDto - The data transfer object containing movie creation details.
    * @returns {Promise<MovieSchema>} A promise that resolves to the newly created movie entity.
    * @throws {UnableToCreateMovieException} When the movie cannot be created.
-   *
-   * @example
-   * // POST /movies
-   * // Request body: { "name": "Inception", "description": "A mind-bending thriller" }
-   * // Response: { "id": "uuid", "name": "Inception", "description": "A mind-bending thriller", ... }
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -103,10 +105,6 @@ export class MoviesController {
    * @param {string} id - The unique identifier of the movie to retrieve.
    * @returns {Promise<MovieSchema>} A promise that resolves to the found movie entity.
    * @throws {MovieNotFoundException} When the movie with the specified ID is not found.
-   *
-   * @example
-   * // GET /movies/550e8400-e29b-41d4-a716-446655440000
-   * // Response: { "id": "550e8400-e29b-41d4-a716-446655440000", "name": "The Matrix", ... }
    */
   @Get(':id')
   @HttpCode(HttpStatus.OK)

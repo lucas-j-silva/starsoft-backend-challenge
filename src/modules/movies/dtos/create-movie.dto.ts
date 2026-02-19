@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Data Transfer Object for creating a new movie.
+ *
+ * @description
+ * This file contains the DTO class used to validate and transfer data
+ * when creating a new movie. It includes validation decorators
+ * from class-validator to ensure data integrity.
+ *
+ * @module create-movie.dto
+ */
+
 import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 

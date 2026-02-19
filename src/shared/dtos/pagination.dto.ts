@@ -18,15 +18,10 @@ import { IsInt, IsNotEmpty, IsOptional, Max, Min } from 'class-validator';
  * It ensures the provided limit and page values are valid integers within acceptable ranges.
  *
  * @example
- * // Valid usage with both parameters
- * const dto = new PaginationDto();
- * dto.limit = 10;
- * dto.page = 1;
- *
- * @example
- * // Valid usage with only required parameter
- * const dto = new PaginationDto();
- * dto.page = 2;
+ * const dto = new PaginationDto({
+ *   limit: 10,
+ *   page: 1,
+ * });
  */
 @ApiSchema({
   name: 'PaginationDto',
@@ -69,4 +64,13 @@ export class PaginationDto {
     minimum: 1,
   })
   page: number;
+
+  /**
+   * Creates an instance of PaginationDto.
+   *
+   * @param {Partial<PaginationDto>} data - The data to create the instance from
+   */
+  constructor(data: Partial<PaginationDto>) {
+    Object.assign(this, data);
+  }
 }

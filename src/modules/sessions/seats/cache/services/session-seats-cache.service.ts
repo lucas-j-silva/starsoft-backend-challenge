@@ -71,8 +71,6 @@ export class SessionSeatsCacheService {
       .getInstance()
       .get(`reservation:${reservationId}`);
 
-    console.log(expiresAt);
-
     if (!expiresAt) return null;
 
     return new Date(expiresAt);

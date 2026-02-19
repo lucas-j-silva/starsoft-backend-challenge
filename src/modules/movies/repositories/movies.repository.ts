@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Repository for managing movie entities in the database.
+ *
+ * @description
+ * This file contains the MoviesRepository class which provides data access
+ * methods for movie entities, including CRUD operations and pagination.
+ *
+ * @module movies.repository
+ */
+
 import { Injectable } from '@nestjs/common';
 import { MovieInsertSchema, MovieSchema, moviesTable } from '../schemas';
 import { eq } from 'drizzle-orm';
@@ -7,22 +17,13 @@ import { TransactionHost } from '@nestjs-cls/transactional';
 import { DatabaseTransactionAdapter } from '../../../shared/database/database.provider';
 import { PaginationDto } from '../../../shared/dtos/pagination.dto';
 import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
+
 /**
  * Repository class for managing movie data persistence operations.
  * Provides methods for CRUD operations on the movies table using Drizzle ORM.
  *
  * @class MoviesRepository
  * @injectable
- *
- * @example
- * // Inject and use in a service
- * constructor(private readonly moviesRepository: MoviesRepository) {}
- *
- * // Find a movie by ID
- * const movie = await this.moviesRepository.findById('123e4567-e89b-12d3-a456-426614174000');
- *
- * // Insert a new movie
- * const newMovie = await this.moviesRepository.insert({ name: 'Movie Title', description: 'Description' });
  */
 @Injectable()
 export class MoviesRepository {

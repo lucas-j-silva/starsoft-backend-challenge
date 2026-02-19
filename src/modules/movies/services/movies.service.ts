@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Service class for managing movie-related operations.
+ *
+ * @description
+ * This file contains the MoviesService class which acts as a facade for movie operations,
+ * delegating business logic to specific use cases for creating, finding, and listing movies.
+ *
+ * @module movies.service
+ */
+
 import { CreateMovieDto, ListMoviesWithPaginationDto } from '../dtos';
 import { MovieSchema } from '../schemas';
 import {
@@ -14,19 +24,6 @@ import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto'
  *
  * @class MoviesService
  * @decorator Injectable - Marks the class as a NestJS injectable provider.
- *
- * @example
- * // Inject and use in a controller
- * constructor(private readonly moviesService: MoviesService) {}
- *
- * // Create a new movie
- * const movie = await this.moviesService.create({
- *   name: 'Inception',
- *   description: 'A mind-bending thriller'
- * });
- *
- * // Find a movie by ID
- * const movie = await this.moviesService.findById('550e8400-e29b-41d4-a716-446655440000');
  */
 @Injectable()
 export class MoviesService {
@@ -35,6 +32,7 @@ export class MoviesService {
    *
    * @param {CreateMovieUseCase} createMovieUseCase - Use case for creating new movies.
    * @param {FindMovieByIdUseCase} findMovieByIdUseCase - Use case for finding movies by ID.
+   * @param {ListMoviesWithPaginationUseCase} listMoviesWithPaginationUseCase - Use case for listing movies with pagination.
    */
   constructor(
     private readonly createMovieUseCase: CreateMovieUseCase,

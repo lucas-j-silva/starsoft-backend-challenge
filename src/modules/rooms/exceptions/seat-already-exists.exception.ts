@@ -1,11 +1,22 @@
-import { ConflictException, Logger } from '@nestjs/common';
+/**
+ * @fileoverview Exception thrown when a seat already exists in the database.
+ *
+ * @description
+ * This file contains the SeatAlreadyExistsException class which extends NestJS's
+ * BadRequestException to provide specific error handling for seat creation conflicts.
+ *
+ * @module seat-already-exists.exception
+ */
+
+import { Logger } from '@nestjs/common';
+import { CustomException } from '../../../shared/exceptions/custom.exception';
 
 /**
  * Exception thrown when a seat already exists in the database.
- * Extends NestJS ConflictException to provide HTTP 409 responses.
+ * Extends CustomException to provide HTTP 409 responses.
  *
  * @class SeatAlreadyExistsException
- * @extends {ConflictException}
+ * @extends {CustomException}
  *
  * @example
  * // Throw when seat already exists
@@ -17,7 +28,7 @@ import { ConflictException, Logger } from '@nestjs/common';
  * throw new SeatAlreadyExistsException();
  * // Logs: "Seat already exists"
  */
-export class SeatAlreadyExistsException extends ConflictException {
+export class SeatAlreadyExistsException extends CustomException {
   /**
    * Logger instance for logging warning messages when exception is thrown.
    * @private
@@ -31,7 +42,7 @@ export class SeatAlreadyExistsException extends ConflictException {
   constructor() {
     const message = 'rooms.SEAT_ALREADY_EXISTS';
 
-    super(message);
+    super(message, 409);
 
     this.logger.warn(message);
   }

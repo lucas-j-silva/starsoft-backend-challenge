@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Use case for creating a new movie.
+ *
+ * @description
+ * This file contains the use case implementation for creating a new movie
+ * within the system. It handles the business logic for inserting a movie
+ * record into the data store and returns the resulting persisted movie schema.
+ *
+ * @module create-movie.use-case
+ */
+
 import { ICreateMovieUseCase } from '../interfaces';
 import { MoviesRepository } from '../repositories';
 import { CreateMovieDto } from '../dtos';

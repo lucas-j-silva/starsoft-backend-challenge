@@ -15,6 +15,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -40,11 +41,6 @@ import { RoomsPaginationResultApiSchema } from '../swagger/schemas/rooms-paginat
  *
  * @class RoomsController
  * @decorator Controller - Marks the class as a NestJS controller with 'rooms' route prefix.
- *
- * @example
- * // GET /rooms - List rooms with pagination
- * // GET /rooms/:id - Find a room by ID
- * // POST /rooms - Create a new room
  */
 @Controller('rooms')
 @ApiCookieAuth()
@@ -62,10 +58,6 @@ export class RoomsController {
    * @async
    * @param {ListRoomsWithPaginationDto} query - The pagination parameters from query string.
    * @returns {Promise<PaginationResultDto<RoomSchema>>} A promise that resolves to a paginated result containing rooms.
-   *
-   * @example
-   * // GET /rooms?page=1&limit=10
-   * // Response: { data: [...], metadata: { page: 1, limit: 10, total: 100 } }
    */
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -91,10 +83,6 @@ export class RoomsController {
    * @param {string} id - The unique identifier of the room.
    * @returns {Promise<RoomSchema>} A promise that resolves to the found room.
    * @throws {RoomNotFoundException} When the room with the specified ID is not found.
-   *
-   * @example
-   * // GET /rooms/550e8400-e29b-41d4-a716-446655440000
-   * // Response: { id: '550e8400-e29b-41d4-a716-446655440000', name: 'Room A', ... }
    */
   @Get(':id')
   @HttpCode(HttpStatus.OK)
@@ -115,7 +103,7 @@ export class RoomsController {
     name: 'id',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
-  async findById(@Param('id') id: string): Promise<RoomSchema> {
+  async findById(@Param('id', ParseUUIDPipe) id: string): Promise<RoomSchema> {
     return this.roomsService.findById(id);
   }
 
@@ -126,11 +114,6 @@ export class RoomsController {
    * @param {CreateRoomDto} createRoomDto - The data transfer object containing room creation details.
    * @returns {Promise<RoomSchema>} A promise that resolves to the newly created room.
    * @throws {UnableToCreateRoomException} When the room cannot be created in the database.
-   *
-   * @example
-   * // POST /rooms
-   * // Body: { name: 'Room A', capacity: 100 }
-   * // Response: { id: '550e8400-e29b-41d4-a716-446655440000', name: 'Room A', capacity: 100, ... }
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)

@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Exception thrown when a movie cannot be found in the database.
+ *
+ * @description
+ * This file contains the MovieNotFoundException class which extends NestJS's
+ * NotFoundException to provide specific error handling for movie lookup failures.
+ *
+ * @module movie-not-found.exception
+ */
+
 import { Logger } from '@nestjs/common';
 import { CustomException } from '../../../shared/exceptions/custom.exception';
 

@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Data Transfer Object for finding a movie by its unique identifier.
+ *
+ * @description
+ * This file contains the DTO class used to validate and transfer data
+ * when finding a movie by its unique identifier. It includes validation decorators
+ * from class-validator to ensure data integrity.
+ *
+ * @module find-movie-by-id.dto
+ */
+
 import { IsNotEmpty, IsUUID } from 'class-validator';
 
 /**

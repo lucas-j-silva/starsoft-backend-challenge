@@ -185,8 +185,6 @@ export class ReserveSessionSeatUseCase implements IReserveSessionSeatUseCase {
         sessionSeatId,
       );
 
-    console.log(sessionSeatId, 'cachedAvailability', cachedAvailability);
-
     if (cachedAvailability !== null) {
       if (cachedAvailability === false)
         throw new SessionSeatNotAvailableException();

@@ -1,3 +1,14 @@
+/**
+ * @fileoverview NestJS module for payments management.
+ *
+ * @description
+ * This file contains the PaymentsModule class which encapsulates all
+ * functionality related to payment processing, including HTTP endpoints,
+ * Kafka event consumers, scheduled tasks, and repository access.
+ *
+ * @module payments.module
+ */
+
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../../shared/database/database.module';
 import { PaymentsReservationCreatedConsumer } from './events/consumers';
@@ -9,6 +20,30 @@ import { PaymentsProducer } from './events/producers';
 import { SessionsCoreModule } from '../sessions/core/sessions-core.module';
 import { PaymentsController } from './controllers/payments.controller';
 
+/**
+ * Module for managing payments.
+ *
+ * @description
+ * Provides all necessary components for payment operations including:
+ * - HTTP controller for payment endpoints
+ * - Kafka consumer for reservation created events
+ * - Use cases encapsulating payment business logic
+ * - Service orchestrating use case execution
+ * - Repository for database persistence
+ * - Producer for emitting payment Kafka events
+ * - Scheduler for marking expired payments
+ *
+ * @class PaymentsModule
+ *
+ * @example
+ * // Import in AppModule
+ * import { PaymentsModule } from './modules/payments/payments.module';
+ *
+ * @Module({
+ *   imports: [PaymentsModule],
+ * })
+ * export class AppModule {}
+ */
 @Module({
   imports: [DatabaseModule, SessionsCoreModule],
   controllers: [

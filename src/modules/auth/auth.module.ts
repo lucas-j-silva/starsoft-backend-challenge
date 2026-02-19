@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Authentication module that integrates Better Auth with NestJS.
+ *
+ * @description
+ * This module configures the authentication system using the `@thallesp/nestjs-better-auth`
+ * package, which provides a NestJS wrapper around Better Auth. It uses an async factory
+ * pattern to inject the Drizzle database client for authentication data persistence.
+ *
+ * @module auth.module
+ */
+
 import { Module } from '@nestjs/common';
 import { AuthModule as BetterAuthModule } from '@thallesp/nestjs-better-auth';
 import { BetterAuth } from '../../shared/auth/better-auth';

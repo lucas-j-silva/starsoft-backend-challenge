@@ -1,3 +1,14 @@
+/**
+ * @fileoverview Repository for managing payment entities in the database.
+ *
+ * @description
+ * This file contains the PaymentsRepository class which provides data access
+ * methods for payment entities, including lookups by ID, user-scoped queries,
+ * listing expired payments, paginated listing with filter, insertion, and updates.
+ *
+ * @module payments.repository
+ */
+
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 import { DatabaseTransactionAdapter } from '../../../shared/database/database.provider';
@@ -12,12 +23,51 @@ import { PaymentStatus } from '../enums/payment-status.enum';
 import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { PaymentNotFoundException } from '../exceptions';
 
+/**
+ * Repository class for managing payment entities.
+ *
+ * @description
+ * Provides data access methods for payment entities including finding by ID,
+ * finding by ID with user ownership check, finding by ID or external ID,
+ * listing expired payments, listing with pagination and filter, inserting new
+ * payments, and updating existing payments. Uses transactional database
+ * operations through the TransactionHost.
+ *
+ * @class PaymentsRepository
+ *
+ * @example
+ * const payment = await paymentsRepository.findById('550e8400-e29b-41d4-a716-446655440000');
+ *
+ * @example
+ * const paginatedPayments = await paymentsRepository.listWithPaginationAndFilter({
+ *   page: 1,
+ *   limit: 10,
+ *   userId: 'user-uuid'
+ * });
+ */
 @Injectable()
 export class PaymentsRepository {
+  /**
+   * Creates an instance of PaymentsRepository.
+   *
+   * @param {TransactionHost<DatabaseTransactionAdapter>} txHost - The transaction host for database operations.
+   */
   constructor(
     private readonly txHost: TransactionHost<DatabaseTransactionAdapter>,
   ) {}
 
+  /**
+   * Finds a payment by its unique primary key identifier.
+   *
+   * @async
+   * @param {string} id - The unique identifier of the payment to find.
+   * @returns {Promise<PaymentSchema>} A promise that resolves to the found payment.
+   * @throws {PaymentNotFoundException} When no payment is found with the given ID.
+   *
+   * @example
+   * const payment = await paymentsRepository.findById('550e8400-e29b-41d4-a716-446655440000');
+   * console.log(payment.status);
+   */
   async findById(id: string): Promise<PaymentSchema> {
     const [payment] = await this.txHost.tx
       .select()
@@ -29,6 +79,22 @@ export class PaymentsRepository {
     return payment;
   }
 
+  /**
+   * Finds a payment by its ID ensuring it belongs to the specified user.
+   *
+   * @async
+   * @param {string} id - The unique identifier of the payment.
+   * @param {string} userId - The unique identifier of the user who must own the payment.
+   * @returns {Promise<PaymentSchema>} A promise that resolves to the found payment.
+   * @throws {PaymentNotFoundException} When no payment is found with the given ID for the specified user.
+   *
+   * @example
+   * const payment = await paymentsRepository.findByIdAndUserId(
+   *   '550e8400-e29b-41d4-a716-446655440000',
+   *   'user-uuid'
+   * );
+   * console.log(payment.userId);
+   */
   async findByIdAndUserId(id: string, userId: string): Promise<PaymentSchema> {
     const [payment] = await this.txHost.tx
       .select()
@@ -40,6 +106,18 @@ export class PaymentsRepository {
     return payment;
   }
 
+  /**
+   * Finds a payment by searching both its internal ID and its external identifier.
+   *
+   * @async
+   * @param {string} id - The value to match against both the internal ID and the externalId columns.
+   * @returns {Promise<PaymentSchema>} A promise that resolves to the found payment.
+   * @throws {PaymentNotFoundException} When no payment is found matching either the ID or external ID.
+   *
+   * @example
+   * const payment = await paymentsRepository.findByIdOrExternalId('ext-ref-abc123');
+   * console.log(payment.externalId);
+   */
   async findByIdOrExternalId(id: string): Promise<PaymentSchema> {
     const [payment] = await this.txHost.tx
       .select()
@@ -51,6 +129,16 @@ export class PaymentsRepository {
     return payment;
   }
 
+  /**
+   * Returns all payments that are in PENDING status and have passed their expiration date.
+   *
+   * @async
+   * @returns {Promise<PaymentSchema[]>} A promise that resolves to an array of expired pending payments.
+   *
+   * @example
+   * const expiredPayments = await paymentsRepository.listExpiredPayments();
+   * // Returns: [{ id: '...', status: 'PENDING', expiresAt: Date(past), ... }, ...]
+   */
   async listExpiredPayments(): Promise<PaymentSchema[]> {
     const payments = await this.txHost.tx
       .select()
@@ -65,6 +153,27 @@ export class PaymentsRepository {
     return payments;
   }
 
+  /**
+   * Lists payments for a user with pagination support and an optional status filter.
+   *
+   * @async
+   * @param {ListPaymentsWithPaginationAndFilterDto} data - The query parameters including page, limit, userId, and optional status.
+   * @param {number} [data.page=1] - The page number to retrieve.
+   * @param {number} [data.limit=10] - The number of items per page.
+   * @param {string} data.userId - The user ID to scope the payment list to.
+   * @param {PaymentStatus} [data.status] - Optional payment status to filter by.
+   * @returns {Promise<PaginationResultDto<PaymentSchema>>} A promise that resolves to a paginated and filtered list of payments.
+   *
+   * @example
+   * const result = await paymentsRepository.listWithPaginationAndFilter({
+   *   page: 1,
+   *   limit: 10,
+   *   userId: 'user-uuid',
+   *   status: 'APPROVED'
+   * });
+   * console.log(result.data);     // Array of PaymentSchema
+   * console.log(result.metadata); // Pagination metadata
+   */
   async listWithPaginationAndFilter(
     data: ListPaymentsWithPaginationAndFilterDto,
   ): Promise<PaginationResultDto<PaymentSchema>> {
@@ -101,6 +210,22 @@ export class PaymentsRepository {
     });
   }
 
+  /**
+   * Inserts a new payment record into the database.
+   *
+   * @async
+   * @param {CreatePaymentDto} data - The payment data to insert.
+   * @returns {Promise<PaymentSchema>} A promise that resolves to the newly created payment.
+   * @throws {UnableToCreatePaymentException} When the payment creation fails.
+   *
+   * @example
+   * const newPayment = await paymentsRepository.insert({
+   *   userId: 'user-uuid',
+   *   sessionSeatId: '550e8400-e29b-41d4-a716-446655440000',
+   *   amountInCents: 2500,
+   *   expiresAt: new Date('2024-01-15T20:00:00Z'),
+   * });
+   */
   async insert(data: CreatePaymentDto): Promise<PaymentSchema> {
     const [payment] = await this.txHost.tx
       .insert(paymentsTable)
@@ -112,6 +237,20 @@ export class PaymentsRepository {
     return payment;
   }
 
+  /**
+   * Updates an existing payment record in the database by its ID.
+   *
+   * @async
+   * @param {string} id - The unique identifier of the payment to update.
+   * @param {Partial<PaymentInsertSchema>} data - The partial payment data fields to update.
+   * @returns {Promise<PaymentSchema>} A promise that resolves to the updated payment.
+   *
+   * @example
+   * const updatedPayment = await paymentsRepository.update(
+   *   '550e8400-e29b-41d4-a716-446655440000',
+   *   { status: 'APPROVED', approvedAt: new Date() }
+   * );
+   */
   async update(
     id: string,
     data: Partial<PaymentInsertSchema>,

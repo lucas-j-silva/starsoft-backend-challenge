@@ -1,3 +1,12 @@
+/**
+ * @fileoverview Use case for finding a movie by its unique identifier.
+ *
+ * @description
+ * This file contains the use case implementation for finding a movie by its unique identifier.
+ *
+ * @module find-movie-by-id.use-case
+ */
+
 import { Injectable } from '@nestjs/common';
 import { FindMovieByIdDto } from '../dtos';
 import { IFindMovieByIdUseCase } from '../interfaces';

@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Interface defining the contract for the Create Movie use case.
+ *
+ * @description
+ * This file contains the interface that any Create Movie use case implementation
+ * must satisfy, ensuring a consistent API for movie creation across the module.
+ *
+ * @module create-movie.use-case.interface
+ */
+
 import { CreateMovieDto } from '../dtos';
 import { MovieSchema } from '../schemas';
 

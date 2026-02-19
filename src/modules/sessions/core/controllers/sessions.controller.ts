@@ -55,10 +55,6 @@ export class SessionsController {
    *
    * @param {string} id - The unique identifier of the session.
    * @returns {Promise<SessionSchema>} A promise that resolves to the found session.
-   *
-   * @example
-   * const session = await sessionsController.findSession('550e8400-e29b-41d4-a716-446655440000');
-   * console.log(session); // SessionSchema object
    */
   @Get(':id')
   @HttpCode(HttpStatus.OK)
@@ -90,10 +86,6 @@ export class SessionsController {
    *
    * @param {ListSessionsWithPaginationDto} listSessionsWithPaginationDto - DTO containing pagination parameters
    * @returns {Promise<PaginationResultDto<SessionSchema>>} Paginated list of sessions
-   *
-   * @example
-   * // GET /sessions?page=1&limit=10
-   * // Returns: { data: SessionSchema[], metadata: {...} }
    */
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -120,11 +112,6 @@ export class SessionsController {
    * @param {CreateSessionDto} createSessionDto - DTO containing session creation data (movie, room, schedule)
    * @returns {Promise<SessionSchema>} The newly created session
    * @throws {BadRequestException} When the session cannot be created (e.g., scheduling conflict)
-   *
-   * @example
-   * // POST /sessions
-   * // Body: { movieId: "uuid", roomId: "uuid", startTime: "2024-01-01T10:00:00Z" }
-   * // Returns: SessionSchema
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -155,11 +142,6 @@ export class SessionsController {
    * @returns {Promise<SessionSchema>} The updated session
    * @throws {BadRequestException} When the session cannot be updated (e.g., invalid data, scheduling conflict)
    * @throws {NotFoundException} When the session with the given ID is not found
-   *
-   * @example
-   * // PUT /sessions/123e4567-e89b-12d3-a456-426614174000
-   * // Body: { startTime: "2024-01-01T14:00:00Z" }
-   * // Returns: SessionSchema
    */
   @Put(':id')
   @HttpCode(HttpStatus.OK)

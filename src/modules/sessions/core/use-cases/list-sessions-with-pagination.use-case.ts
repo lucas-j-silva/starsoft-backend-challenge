@@ -21,6 +21,11 @@ import { Injectable } from '@nestjs/common';
  */
 @Injectable()
 export class ListSessionsWithPaginationUseCase implements IListSessionsWithPaginationUseCase {
+  /**
+   * Creates an instance of ListSessionsWithPaginationUseCase.
+   *
+   * @param {SessionsRepository} sessionsRepository - Repository for session data operations.
+   */
   constructor(private readonly sessionsRepository: SessionsRepository) {}
 
   /**

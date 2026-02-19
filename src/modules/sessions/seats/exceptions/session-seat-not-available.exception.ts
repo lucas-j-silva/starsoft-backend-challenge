@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Exception thrown when a session seat is not available.
+ *
+ * @description
+ * This file contains the SessionSeatNotAvailableException class which extends NestJS's
+ * BadRequestException to provide specific error handling for session seat availability checks.
+ *
+ * @module session-seat-not-available.exception
+ */
+
 import { Logger } from '@nestjs/common';
 import { CustomException } from '../../../../shared/exceptions/custom.exception';
 

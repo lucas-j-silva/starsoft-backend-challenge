@@ -21,6 +21,11 @@ import { UnableToUpdateSessionException } from '../exceptions/unable-to-update-s
  */
 @Injectable()
 export class UpdateSessionUseCase implements IUpdateSessionUseCase {
+  /**
+   * Creates an instance of UpdateSessionUseCase.
+   *
+   * @param {SessionsRepository} sessionsRepository - Repository for session data operations.
+   */
   constructor(private readonly sessionsRepository: SessionsRepository) {}
 
   /**

@@ -1,3 +1,13 @@
+/**
+ * @fileoverview Interface defining the contract for the Find Movie by Id use case.
+ *
+ * @description
+ * This file contains the interface that any Find Movie by Id use case implementation
+ * must satisfy, ensuring a consistent API for finding a movie by its unique identifier across the module.
+ *
+ * @module find-movie-by-id.use-case.interface
+ */
+
 import { MovieSchema } from '../schemas';
 import { FindMovieByIdDto } from '../dtos';
 

@@ -37,7 +37,22 @@ export const user = pgTable('user', {
     .notNull(),
 });
 
+/**
+ * Type representing a user record as returned from database queries.
+ *
+ * @description
+ * Inferred select type from the user table schema. Use this type when
+ * working with user data retrieved from the database.
+ */
 export type UserSchema = typeof user.$inferSelect;
+
+/**
+ * Type representing the data required to insert a new user record.
+ *
+ * @description
+ * Inferred insert type from the user table schema. Use this type when
+ * creating new user records in the database.
+ */
 export type UserInsertSchema = typeof user.$inferInsert;
 
 /**
