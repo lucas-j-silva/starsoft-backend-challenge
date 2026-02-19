@@ -112,4 +112,52 @@ export class CacheLockService {
   ): Promise<RedlockInstance | null> {
     return await this.redlock.acquire(resource, ttl);
   }
+
+  /**
+   * Attempts to acquire a lightweight distributed lock for the given resource.
+   *
+   * @description
+   * Uses a simple Redis SET with NX (only set if not exists) and PX (expiration
+   * in milliseconds) options to acquire a lock. Unlike `acquireLock`, this method
+   * does not use Redlock and does not retry — it immediately returns `null` if
+   * the lock is already held by another process.
+   *
+   * This is useful for scenarios where you want a quick, non-blocking lock check
+   * without the overhead of Redlock's retry mechanism.
+   *
+   * @async
+   * @param {string} resource - A unique identifier for the resource to lock
+   *   (e.g. `"locks:seat:550e8400"`).
+   * @param {number} ttl - Lock time-to-live in milliseconds. The lock is
+   *   automatically released by Redis after this duration even if the caller
+   *   does not release it explicitly.
+   * @returns {Promise<{ release: () => Promise<void> } | null>} An object with a
+   *   `release` method to manually release the lock, or `null` if the lock could
+   *   not be acquired (resource is already locked).
+   *
+   * @example
+   * const lock = await cacheLockService.tryAcquireLock('locks:order:99', 3000);
+   * if (!lock) {
+   *   // Lock is already held — handle contention
+   *   return;
+   * }
+   * try {
+   *   // perform guarded work ...
+   * } finally {
+   *   await lock.release();
+   * }
+   */
+  async tryAcquireLock(
+    resource: string,
+    ttl: number,
+  ): Promise<{ release: () => Promise<void> } | null> {
+    const client = this.cacheClientService.getInstance();
+    const result = await client.set(resource, '1', { NX: true, PX: ttl });
+    if (!result) return null;
+    return {
+      release: async () => {
+        await client.del(resource);
+      },
+    };
+  }
 }

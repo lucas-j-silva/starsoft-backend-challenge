@@ -11,7 +11,11 @@
 
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../../shared/database/database.module';
-import { PaymentsReservationCreatedConsumer } from './events/consumers';
+import { CacheModule } from '../../shared/cache/cache.module';
+import {
+  PaymentsReservationCreatedConsumer,
+  PaymentsSessionSeatReservationConflictConsumer,
+} from './events/consumers';
 import { PaymentsUseCases } from './use-cases';
 import { PaymentsService } from './services/payments.service';
 import { PaymentsRepository } from './repositories/payments.repository';
@@ -45,10 +49,11 @@ import { PaymentsController } from './controllers/payments.controller';
  * export class AppModule {}
  */
 @Module({
-  imports: [DatabaseModule, SessionsCoreModule],
+  imports: [DatabaseModule, SessionsCoreModule, CacheModule],
   controllers: [
     // Consumers
     PaymentsReservationCreatedConsumer,
+    PaymentsSessionSeatReservationConflictConsumer,
     // Controllers
     PaymentsController,
   ],

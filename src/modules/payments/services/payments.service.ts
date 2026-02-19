@@ -21,10 +21,14 @@ import { CreatePaymentUseCase } from '../use-cases/create-payment.use-case';
 import { PaymentSchema } from '../schemas';
 import { HandleReservationCreatedUseCase } from '../use-cases/handle-reservation-created.use-case';
 import { ListPaymentsWithPaginationAndFilterUseCase } from '../use-cases/list-payments-with-pagination-and-filter.use-case';
-import { ReservationCreatedMessage } from '../../sessions/seats/events/messages';
 import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { ApprovePaymentUseCase } from '../use-cases/approve-payment.use-case';
 import { FindPaymentUseCase } from '../use-cases/find-payment.use-case';
+import { HandleSessionSeatReservationConflictUseCase } from '../use-cases/handle-session-seat-reservation-conflict.use-case';
+import {
+  SessionSeatReservationConflictMessage,
+  ReservationCreatedMessage,
+} from '../../sessions/seats/events/messages';
 
 /**
  * Service for payment management operations.
@@ -71,6 +75,7 @@ export class PaymentsService {
     private readonly listPaymentsWithPaginationAndFilterUseCase: ListPaymentsWithPaginationAndFilterUseCase,
     private readonly approvePaymentUseCase: ApprovePaymentUseCase,
     private readonly findPaymentUseCase: FindPaymentUseCase,
+    private readonly handleSessionSeatReservationConflictUseCase: HandleSessionSeatReservationConflictUseCase,
   ) {}
 
   /**
@@ -163,5 +168,32 @@ export class PaymentsService {
    */
   async findPayment(data: FindPaymentDto): Promise<PaymentSchema> {
     return this.findPaymentUseCase.execute(data);
+  }
+
+  /**
+   * Handles a session seat reservation conflict by processing the refund.
+   *
+   * @description
+   * This method is invoked when a payment was approved but the associated
+   * seat was already sold, resulting in a conflict. It delegates to the
+   * use case responsible for refunding the payment and updating its status
+   * to REFUNDED.
+   *
+   * @async
+   * @param {SessionSeatReservationConflictMessage} payload - The conflict event data containing
+   *   the reservation ID, session seat ID, and user ID involved in the conflict.
+   * @returns {Promise<void>} A promise that resolves when the conflict has been handled.
+   *
+   * @example
+   * await paymentsService.handleSessionSeatReservationConflict({
+   *   reservationId: '550e8400-e29b-41d4-a716-446655440000',
+   *   sessionSeatId: '550e8400-e29b-41d4-a716-446655440001',
+   *   userId: '550e8400-e29b-41d4-a716-446655440002',
+   * });
+   */
+  async handleSessionSeatReservationConflict(
+    payload: SessionSeatReservationConflictMessage,
+  ): Promise<void> {
+    return this.handleSessionSeatReservationConflictUseCase.execute(payload);
   }
 }

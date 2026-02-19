@@ -3,6 +3,7 @@ import { HandleReservationCreatedUseCase } from './handle-reservation-created.us
 import { ListPaymentsWithPaginationAndFilterUseCase } from './list-payments-with-pagination-and-filter.use-case';
 import { ApprovePaymentUseCase } from './approve-payment.use-case';
 import { FindPaymentUseCase } from './find-payment.use-case';
+import { HandleSessionSeatReservationConflictUseCase } from './handle-session-seat-reservation-conflict.use-case';
 
 export const PaymentsUseCases = [
   CreatePaymentUseCase,
@@ -10,4 +11,5 @@ export const PaymentsUseCases = [
   ListPaymentsWithPaginationAndFilterUseCase,
   ApprovePaymentUseCase,
   FindPaymentUseCase,
+  HandleSessionSeatReservationConflictUseCase,
 ];

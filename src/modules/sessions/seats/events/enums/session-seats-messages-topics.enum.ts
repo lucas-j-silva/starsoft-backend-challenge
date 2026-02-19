@@ -45,4 +45,13 @@ export enum SessionSeatsMessagesTopics {
    * @memberof SessionSeatsMessagesTopics
    */
   SESSION_SEAT_RELEASED = 'session-seats.seats.released',
+
+  /**
+   * Message topic for when a payment-approved event targets a seat that
+   * was already sold, triggering a reservation conflict and refund.
+   *
+   * @type {string}
+   * @memberof SessionSeatsMessagesTopics
+   */
+  SESSION_SEAT_RESERVATION_CONFLICT = 'session-seats.seats.reservation-conflict',
 }

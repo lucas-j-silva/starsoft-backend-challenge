@@ -14,6 +14,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { SessionSeatReservationsRepository } from '../repositories';
 import { Transactional } from '@nestjs-cls/transactional';
 import { SessionSeatsProducer } from '../events/producers';
+import { CacheLockService } from '../../../../shared/cache/cache-lock.service';
 
 /**
  * Scheduler for session seat reservation expiration handling.
@@ -43,10 +44,12 @@ export class SessionSeatScheduler {
    *
    * @param {SessionSeatReservationsRepository} sessionSeatReservationsRepository - Repository for session seat reservation operations.
    * @param {SessionSeatsProducer} sessionSeatsProducer - Producer for emitting session seat events to Kafka.
+   * @param {CacheLockService} cacheLockService - Service for acquiring and releasing locks.
    */
   constructor(
     private readonly sessionSeatReservationsRepository: SessionSeatReservationsRepository,
     private readonly sessionSeatsProducer: SessionSeatsProducer,
+    private readonly cacheLockService: CacheLockService,
   ) {}
 
   /**
@@ -73,32 +76,42 @@ export class SessionSeatScheduler {
   @Cron(CronExpression.EVERY_10_SECONDS)
   @Transactional()
   async handleSessionSeatReservationExpiration(): Promise<void> {
-    const startTime = performance.now();
+    const lock = await this.cacheLockService.tryAcquireLock(
+      'locks:scheduler:session-seat-reservation-expiration',
+      5_000,
+    );
+    if (!lock) return;
 
-    const expiredReservations =
-      await this.sessionSeatReservationsRepository.listExpiredSessionSeatReservations();
+    try {
+      const startTime = performance.now();
 
-    for (const reservation of expiredReservations) {
-      // Process reservations and kafka events in parallel to improve performance
-      await Promise.all([
-        this.sessionSeatsProducer.sendReservationExpiredEvent({
-          id: reservation.id,
-          createdAt: reservation.createdAt,
-          userId: reservation.userId,
-          sessionSeatId: reservation.sessionSeatId,
-          expiresAt: reservation.expiresAt,
-        }),
-        this.sessionSeatsProducer.sendSessionSeatReleasedEvent({
-          id: reservation.sessionSeatId,
-          releasedAt: new Date(),
-        }),
-      ]);
-      await this.sessionSeatReservationsRepository.delete(reservation.id);
+      const expiredReservations =
+        await this.sessionSeatReservationsRepository.listExpiredSessionSeatReservations();
+
+      for (const reservation of expiredReservations) {
+        // Process reservations and kafka events in parallel to improve performance
+        await Promise.all([
+          this.sessionSeatsProducer.sendReservationExpiredEvent({
+            id: reservation.id,
+            createdAt: reservation.createdAt,
+            userId: reservation.userId,
+            sessionSeatId: reservation.sessionSeatId,
+            expiresAt: reservation.expiresAt,
+          }),
+          this.sessionSeatsProducer.sendSessionSeatReleasedEvent({
+            id: reservation.sessionSeatId,
+            releasedAt: new Date(),
+          }),
+        ]);
+        await this.sessionSeatReservationsRepository.delete(reservation.id);
+      }
+
+      if (expiredReservations.length > 0)
+        this.logger.debug(
+          `Found ${expiredReservations.length} expired session seat reservations, processed in: ${performance.now() - startTime}ms`,
+        );
+    } finally {
+      await lock.release();
     }
-
-    if (expiredReservations.length > 0)
-      this.logger.debug(
-        `Found ${expiredReservations.length} expired session seat reservations, processed in: ${performance.now() - startTime}ms`,
-      );
   }
 }

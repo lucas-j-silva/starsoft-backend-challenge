@@ -18,6 +18,7 @@ import {
   ReservationCreatedMessage,
   ReservationExpiredMessage,
   SessionSeatReleasedMessage,
+  SessionSeatReservationConflictMessage,
 } from '../messages';
 
 /**
@@ -170,6 +171,37 @@ export class SessionSeatsProducer {
     await firstValueFrom(
       this.kafkaClient.emit(
         SessionSeatsMessagesTopics.SESSION_SEAT_RELEASED,
+        data,
+      ),
+    );
+  }
+
+  /**
+   * Sends a session seat reservation conflict event to Kafka.
+   *
+   * @description
+   * Publishes a message to the SESSION_SEAT_RESERVATION_CONFLICT topic indicating
+   * that a reservation conflict has occurred. This typically happens when a payment
+   * is approved but the associated seat was already sold, resulting in a conflict
+   * that requires the payment to be refunded.
+   *
+   * @async
+   * @param {SessionSeatReservationConflictMessage} data - The reservation conflict event data.
+   * @returns {Promise<void>} A promise that resolves when the message is sent.
+   *
+   * @example
+   * await producer.sendSessionSeatReservationConflictEvent({
+   *   reservationId: '550e8400-e29b-41d4-a716-446655440000',
+   *   sessionSeatId: '550e8400-e29b-41d4-a716-446655440001',
+   *   userId: '550e8400-e29b-41d4-a716-446655440002',
+   * });
+   */
+  async sendSessionSeatReservationConflictEvent(
+    data: SessionSeatReservationConflictMessage,
+  ): Promise<void> {
+    await firstValueFrom(
+      this.kafkaClient.emit(
+        SessionSeatsMessagesTopics.SESSION_SEAT_RESERVATION_CONFLICT,
         data,
       ),
     );

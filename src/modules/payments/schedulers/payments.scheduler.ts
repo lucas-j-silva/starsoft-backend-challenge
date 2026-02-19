@@ -15,6 +15,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Transactional } from '@nestjs-cls/transactional';
 import { PaymentStatus } from '../enums/payment-status.enum';
 import { PaymentsProducer } from '../events/producers';
+import { CacheLockService } from '../../../shared/cache/cache-lock.service';
 
 /**
  * Scheduler for payment expiration handling.
@@ -54,6 +55,7 @@ export class PaymentsScheduler {
   constructor(
     private readonly paymentsRepository: PaymentsRepository,
     private readonly paymentsProducer: PaymentsProducer,
+    private readonly cacheLockService: CacheLockService,
   ) {}
 
   /**
@@ -81,30 +83,41 @@ export class PaymentsScheduler {
   @Cron(CronExpression.EVERY_30_SECONDS)
   @Transactional()
   async handleExpiredPayments() {
-    const startTime = performance.now();
+    const lock = await this.cacheLockService.tryAcquireLock(
+      'locks:scheduler:payment-expiration',
+      20_000,
+    );
+    if (!lock) return;
 
-    const expiredPayments = await this.paymentsRepository.listExpiredPayments();
+    try {
+      const startTime = performance.now();
 
-    for (const payment of expiredPayments) {
-      await Promise.all([
-        this.paymentsRepository.update(payment.id, {
-          status: PaymentStatus.EXPIRED,
-        }),
-        this.paymentsProducer.sendPaymentExpiredEvent({
-          id: payment.id,
-          userId: payment.userId,
-          amountInCents: payment.amountInCents,
-          expiresAt: payment.expiresAt,
-          externalId: payment.externalId,
-          expiredAt: new Date(),
-        }),
-      ]);
-    }
+      const expiredPayments =
+        await this.paymentsRepository.listExpiredPayments();
 
-    if (expiredPayments.length > 0) {
-      this.logger.debug(
-        `Found ${expiredPayments.length} expired payments, processed in: ${performance.now() - startTime}ms`,
-      );
+      for (const payment of expiredPayments) {
+        await Promise.all([
+          this.paymentsRepository.update(payment.id, {
+            status: PaymentStatus.EXPIRED,
+          }),
+          this.paymentsProducer.sendPaymentExpiredEvent({
+            id: payment.id,
+            userId: payment.userId,
+            amountInCents: payment.amountInCents,
+            expiresAt: payment.expiresAt,
+            externalId: payment.externalId,
+            expiredAt: new Date(),
+          }),
+        ]);
+      }
+
+      if (expiredPayments.length > 0) {
+        this.logger.debug(
+          `Found ${expiredPayments.length} expired payments, processed in: ${performance.now() - startTime}ms`,
+        );
+      }
+    } finally {
+      await lock.release();
     }
   }
 }

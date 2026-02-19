@@ -56,4 +56,13 @@ export enum PaymentStatus {
    * @memberof PaymentStatus
    */
   EXPIRED = 'EXPIRED',
+
+  /**
+   * The payment was approved but the associated seat was already sold,
+   * resulting in a conflict. The payment has been refunded.
+   *
+   * @type {string}
+   * @memberof PaymentStatus
+   */
+  REFUNDED = 'REFUNDED',
 }

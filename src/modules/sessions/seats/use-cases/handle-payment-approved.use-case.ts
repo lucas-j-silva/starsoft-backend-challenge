@@ -18,6 +18,7 @@ import {
 import { PaymentApprovedMessage } from '../../../payments/events/messages';
 import { SessionSeatsCacheService } from '../cache/services';
 import { Transactional } from '@nestjs-cls/transactional';
+import { SessionSeatsProducer } from '../events/producers';
 
 /**
  * Use case for handling payment approved events.
@@ -54,11 +55,13 @@ export class HandlePaymentApprovedUseCase implements IHandlePaymentApprovedUseCa
    * @param {SessionSeatReservationsRepository} sessionsSeatsReservationsRepository - The repository for session seat reservation operations.
    * @param {SessionSeatsRepository} sessionSeatsRepository - The repository for session seat operations.
    * @param {SessionSeatsCacheService} sessionSeatsCacheService - The cache service for session seat availability.
+   * @param {SessionSeatsProducer} sessionSeatsProducer - The producer for session seat reservation conflict events.
    */
   constructor(
     private readonly sessionsSeatsReservationsRepository: SessionSeatReservationsRepository,
     private readonly sessionSeatsRepository: SessionSeatsRepository,
     private readonly sessionSeatsCacheService: SessionSeatsCacheService,
+    private readonly sessionSeatsProducer: SessionSeatsProducer,
   ) {}
 
   /**
@@ -95,6 +98,16 @@ export class HandlePaymentApprovedUseCase implements IHandlePaymentApprovedUseCa
     const sessionSeat = await this.sessionSeatsRepository.findByIdWithRelations(
       reservation.sessionSeatId,
     );
+
+    if (!sessionSeat.isAvailable && sessionSeat.soldAt !== null) {
+      await this.sessionSeatsProducer.sendSessionSeatReservationConflictEvent({
+        reservationId: reservation.id,
+        sessionSeatId: sessionSeat.id,
+        userId: reservation.userId,
+      });
+
+      return;
+    }
 
     await this.sessionSeatsRepository.update(sessionSeat.id, {
       isAvailable: false,
