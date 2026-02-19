@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { randomUUID } from 'crypto';
 import { EventEmitter } from 'events';
-import { RedisClientType } from 'redis';
+import { RedisClientType, RedisClusterType } from 'redis';
 
 /**
  * Represents a distributed lock acquired on a Redis resource.
@@ -58,9 +58,8 @@ export class Redlock extends EventEmitter {
   /**
    * The Redis client instance used for lock operations.
    * @private
-   * @type {RedisClientType}
    */
-  private client: RedisClientType;
+  private client: RedisClientType | RedisClusterType;
 
   /**
    * The number of retry attempts when acquiring a lock.
@@ -80,14 +79,18 @@ export class Redlock extends EventEmitter {
    * Creates an instance of Redlock.
    *
    * @constructor
-   * @param {RedisClientType} client - The Redis client to use for lock operations.
+   * @param client - The Redis client to use for lock operations.
    * @param {number} [retryCount=3] - The number of times to retry acquiring a lock before giving up.
    * @param {number} [retryDelay=200] - The delay in milliseconds between retry attempts.
    *
    * @example
    * const redlock = new Redlock(redisClient, 5, 100);
    */
-  constructor(client: RedisClientType, retryCount = 3, retryDelay = 200) {
+  constructor(
+    client: RedisClientType | RedisClusterType,
+    retryCount = 3,
+    retryDelay = 200,
+  ) {
     super();
     this.client = client;
     this.retryCount = retryCount;

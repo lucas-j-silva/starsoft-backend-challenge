@@ -1,11 +1,6 @@
-import { type UserSchema } from '../../src/modules/auth/schemas/auth.schema';
+import { type UserInsertSchema } from '../../src/modules/auth/schemas/auth.schema';
 
-type UserSeed = Omit<UserSchema, 'createdAt' | 'updatedAt'> & {
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export const users: UserSeed[] = [
+export const users: UserInsertSchema[] = [
   {
     id: 'u_2kF8gR4mN7pQ1sT6vX9yB3',
     name: 'Alice Johnson',
