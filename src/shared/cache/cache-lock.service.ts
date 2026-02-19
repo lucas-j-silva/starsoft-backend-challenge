@@ -1,20 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { CacheClientService } from './cache-client.service';
-import { Lock, Redlock } from './redlock';
+import { Redlock, RedlockInstance } from '@redis-kit/lock';
+import { RedisClientType } from 'redis';
 
 @Injectable()
 export class CacheLockService {
   private redlock: Redlock;
 
   constructor(private readonly cacheClientService: CacheClientService) {
-    this.redlock = new Redlock(this.cacheClientService.getInstance(), 15, 200);
+    this.redlock = new Redlock(
+      [this.cacheClientService.getInstance() as unknown as RedisClientType],
+      {
+        maxRetryAttempts: 25,
+        retryDelayMs: 100,
+      },
+    );
   }
 
-  acquireLock(resource: string, ttl: number): Promise<Lock | null> {
-    return this.redlock.acquireLock(resource, ttl);
+  async acquireLock(
+    resource: string,
+    ttl: number,
+  ): Promise<RedlockInstance | null> {
+    return await this.redlock.acquire(resource, ttl);
   }
 
-  releaseLock(resource: string, value: string): Promise<void> {
-    return this.redlock.releaseLock(resource, value);
-  }
+  // async releaseLock(lock: Lock): Promise<void> {
+  //   return await this.redlock.release(lock);
+  // }
 }

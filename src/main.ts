@@ -17,7 +17,6 @@ async function bootstrap() {
   });
 
   app.enableShutdownHooks();
-  app.getHttpAdapter().getInstance().set('trust proxy', 1);
 
   const configService = app.get(ConfigService);
   const i18n = app.get<I18nService>(I18nService);

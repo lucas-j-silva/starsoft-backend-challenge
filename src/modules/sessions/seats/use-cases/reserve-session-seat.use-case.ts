@@ -160,12 +160,7 @@ export class ReserveSessionSeatUseCase implements IReserveSessionSeatUseCase {
 
       return reservation;
     } finally {
-      console.log('releasing lock f');
-
-      await this.cacheLockService.releaseLock(
-        `locks:reservation:${data.sessionSeatId}`,
-        lock.value,
-      );
+      await lock.release();
     }
   }
 

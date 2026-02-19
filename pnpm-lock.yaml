@@ -38,6 +38,9 @@ importers:
       '@nestjs/swagger':
         specifier: ^11.2.6
         version: 11.2.6(@nestjs/common@11.1.13(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.13)(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)
+      '@redis-kit/lock':
+        specifier: 0.1.0-3
+        version: 0.1.0-3(redis@5.10.0)
       '@scalar/nestjs-api-reference':
         specifier: ^1.0.23
         version: 1.0.23
@@ -77,6 +80,9 @@ importers:
       redis:
         specifier: ^5.10.0
         version: 5.10.0
+      redlock:
+        specifier: 5.0.0-beta.2
+        version: 5.0.0-beta.2
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -114,6 +120,9 @@ importers:
       '@types/pg':
         specifier: ^8.16.0
         version: 8.16.0
+      '@types/redlock':
+        specifier: ^4.0.8
+        version: 4.0.8
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.3
@@ -1244,6 +1253,12 @@ packages:
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
+  '@redis-kit/lock@0.1.0-3':
+    resolution: {integrity: sha512-ym1hsNmwhnKiCXPlMceeN/nwT7VFlJ5ebwZ603NPKNIGBrO6KzlHSPIQro1zF0LNnmWjGqZfMD/9k/MaOFsLXw==}
+    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
+    peerDependencies:
+      redis: ^5.0.0
+
   '@redis/bloom@1.2.0':
     resolution: {integrity: sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==}
     peerDependencies:
@@ -1388,6 +1403,9 @@ packages:
   '@types/babel__traverse@7.28.0':
     resolution: {integrity: sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==}
 
+  '@types/bluebird@3.5.42':
+    resolution: {integrity: sha512-Jhy+MWRlro6UjVi578V/4ZGNfeCOcNCp0YaFNIUGFKlImowqwb1O/22wDVk3FDGMLqxdpOV3qQHD5fPEH4hK6A==}
+
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
 
@@ -1414,6 +1432,9 @@ packages:
 
   '@types/http-errors@2.0.5':
     resolution: {integrity: sha512-r8Tayk8HJnX0FztbZN7oVqGccWgw98T/0neJphO91KkmOzug1KkofZURD4UaD5uH8AqcFLfdPErnBod0u71/qg==}
+
+  '@types/ioredis@4.28.10':
+    resolution: {integrity: sha512-69LyhUgrXdgcNDv7ogs1qXZomnfOEnSmrmMFqKgt1XMJxmoOSG/u3wYy13yACIfKuMJ8IhKgHafDO3sx19zVQQ==}
 
   '@types/ioredis@5.0.0':
     resolution: {integrity: sha512-zJbJ3FVE17CNl5KXzdeSPtdltc4tMT3TzC6fxQS0sQngkbFZ6h+0uTafsRqu+eSLIugf6Yb0Ea0SUuRr42Nk9g==}
@@ -1454,6 +1475,12 @@ packages:
 
   '@types/range-parser@1.2.7':
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
+
+  '@types/redis@2.8.32':
+    resolution: {integrity: sha512-7jkMKxcGq9p242exlbsVzuJb57KqHRhNl4dHoQu2Y5v9bCAbtIXXH0R3HleSQW4CTOqpHIYUW3t6tpUj4BVQ+w==}
+
+  '@types/redlock@4.0.8':
+    resolution: {integrity: sha512-xuJs90FmH3fmGTuLdUzFIGXL3ThWhWRZLL6LFomtzj0DSW+py/brU7NzF1FZ3M/bs/S0Di+XvMGwzVU2j0RXSw==}
 
   '@types/send@1.2.1':
     resolution: {integrity: sha512-arsCikDvlU99zl1g69TcAB3mzZPpxgw0UQnaHeC1Nwb015xp8bknZv5rIfri9xTOcMuaVgvabfIRA7PSZVuZIQ==}
@@ -3765,6 +3792,10 @@ packages:
     resolution: {integrity: sha512-0/Y+7IEiTgVGPrLFKy8oAEArSyEJkU0zvgV5xyi9NzNQ+SLZmyFbUsWIbgPcd4UdUh00opXGKlXJwMmsis5Byw==}
     engines: {node: '>= 18'}
 
+  redlock@5.0.0-beta.2:
+    resolution: {integrity: sha512-2RDWXg5jgRptDrB1w9O/JgSZC0j7y4SlaXnor93H/UJm/QyDiFgBKNtrh0TI6oCXqYSaSoXxFh6Sd3VtYfhRXw==}
+    engines: {node: '>=12'}
+
   reflect-metadata@0.2.2:
     resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}
 
@@ -5461,6 +5492,11 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
+  '@redis-kit/lock@0.1.0-3(redis@5.10.0)':
+    dependencies:
+      redis: 5.10.0
+      tslib: 2.8.1
+
   '@redis/bloom@1.2.0(@redis/client@1.6.1)':
     dependencies:
       '@redis/client': 1.6.1
@@ -5591,6 +5627,8 @@ snapshots:
     dependencies:
       '@babel/types': 7.29.0
 
+  '@types/bluebird@3.5.42': {}
+
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
@@ -5628,6 +5666,10 @@ snapshots:
       '@types/serve-static': 2.2.0
 
   '@types/http-errors@2.0.5': {}
+
+  '@types/ioredis@4.28.10':
+    dependencies:
+      '@types/node': 22.19.11
 
   '@types/ioredis@5.0.0':
     dependencies:
@@ -5671,6 +5713,16 @@ snapshots:
   '@types/qs@6.14.0': {}
 
   '@types/range-parser@1.2.7': {}
+
+  '@types/redis@2.8.32':
+    dependencies:
+      '@types/node': 22.19.11
+
+  '@types/redlock@4.0.8':
+    dependencies:
+      '@types/bluebird': 3.5.42
+      '@types/ioredis': 4.28.10
+      '@types/redis': 2.8.32
 
   '@types/send@1.2.1':
     dependencies:
@@ -8201,6 +8253,10 @@ snapshots:
       '@redis/json': 5.10.0(@redis/client@5.10.0)
       '@redis/search': 5.10.0(@redis/client@5.10.0)
       '@redis/time-series': 5.10.0(@redis/client@5.10.0)
+
+  redlock@5.0.0-beta.2:
+    dependencies:
+      node-abort-controller: 3.1.1
 
   reflect-metadata@0.2.2: {}
 
