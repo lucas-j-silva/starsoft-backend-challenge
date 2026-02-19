@@ -58,7 +58,7 @@ export class ListSeatsWithPaginationDto extends PaginationDto {
    * });
    */
   constructor(data: Partial<ListSeatsWithPaginationDto>) {
-    super();
+    super({});
 
     Object.assign(this, data);
   }

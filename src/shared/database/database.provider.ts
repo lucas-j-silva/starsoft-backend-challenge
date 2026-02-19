@@ -20,6 +20,7 @@
 
 import { TransactionalAdapterDrizzleOrm } from '@nestjs-cls/transactional-adapter-drizzle-orm';
 import { ConfigService } from '@nestjs/config';
+import { withReplicas } from 'drizzle-orm/pg-core';
 import { drizzle } from 'drizzle-orm/node-postgres';
 
 /**
@@ -54,7 +55,10 @@ export const DB_PROVIDER = 'DB_PROVIDER';
 export const DRIZZLE_PROVIDER = {
   provide: DB_PROVIDER,
   useFactory: (configService: ConfigService) => {
-    return drizzle(configService.getOrThrow<string>('DATABASE_URL'), {
+    const primaryUrl = configService.getOrThrow<string>('DATABASE_URL');
+    const replicaUrl = configService.get<string>('DATABASE_REPLICA_URL');
+
+    const primary = drizzle(primaryUrl, {
       // logger: {
       //   logQuery(query, params) {
       //     logger.debug(
@@ -63,6 +67,12 @@ export const DRIZZLE_PROVIDER = {
       //   },
       // },
     });
+
+    if (replicaUrl) {
+      return withReplicas(primary, [drizzle(replicaUrl)]);
+    }
+
+    return primary;
   },
   inject: [ConfigService],
 };

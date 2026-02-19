@@ -44,7 +44,8 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3333
-      - DATABASE_URL=postgresql://postgres:password@db:5432/db
+      - DATABASE_URL=postgresql://postgres:password@db-primary:5432/db
+      - DATABASE_REPLICA_URL=postgresql://postgres:password@db-replica-1:5432/db
       - BETTER_AUTH_URL=http://localhost:3000
       - BETTER_AUTH_SECRET=secret
       - REDIS_SENTINEL_NODES=sentinel-1:26379,sentinel-2:26379,sentinel-3:26379
@@ -53,33 +54,75 @@ services:
       - FALLBACK_LANGUAGE=en
     networks:
       - sentinel-network
+      - database-network
     depends_on:
       sentinel-1:
         condition: service_healthy
-      db:
-        condition: service_started
+      db-primary:
+        condition: service_healthy
+      db-replica-1:
+        condition: service_healthy
       kafka:
         condition: service_healthy
     deploy:
       replicas: 3
 
-  # ── PostgreSQL ────────────────────────────────────────────────────────────
+  # ── PostgreSQL Primary ────────────────────────────────────────────────────
 
-  db:
-    image: postgres:17.5-alpine3.21
-    container_name: db
+  db-primary:
+    image: bitnami/postgresql
+    container_name: db-primary
     attach: false
     ports:
       - '5432:5432'
     restart: always
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres-primary-data:/bitnami/postgresql
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=db
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=replicator
+      - POSTGRESQL_REPLICATION_PASSWORD=replicapassword
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=password
+      - POSTGRESQL_DATABASE=db
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d db || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     networks:
-      - sentinel-network
+      - database-network
+
+  # ── PostgreSQL Replica ────────────────────────────────────────────────────
+
+  db-replica-1:
+    image: bitnami/postgresql
+    container_name: db-replica-1
+    attach: false
+    ports:
+      - '5433:5432'
+    restart: always
+    volumes:
+      - postgres-replica-1-data:/bitnami/postgresql
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_MASTER_HOST=db-primary
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - POSTGRESQL_REPLICATION_USER=replicator
+      - POSTGRESQL_REPLICATION_PASSWORD=replicapassword
+      - POSTGRESQL_PASSWORD=password
+    depends_on:
+      db-primary:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - database-network
 
   # ── Kafka (Redpanda) ──────────────────────────────────────────────────────
 
@@ -270,7 +313,9 @@ services:
       start_period: 15s
 
 volumes:
-  postgres_data:
+  postgres-primary-data:
+    driver: local
+  postgres-replica-1-data:
     driver: local
   redis-master-data:
     driver: local
@@ -281,4 +326,6 @@ volumes:
 
 networks:
   sentinel-network:
+    driver: bridge
+  database-network:
     driver: bridge
