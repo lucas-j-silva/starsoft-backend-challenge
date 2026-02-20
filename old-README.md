@@ -74,7 +74,7 @@ Implemente uma API RESTful com as seguintes operações:
 
 #### 4. **Logging**
 
-- Implementar logging estruturado (níveis: DEBUG, INFO, WARN, ERROR)
+- [ ] Implementar logging estruturado (níveis: DEBUG, INFO, WARN, ERROR)
 
 #### 5. **Clean Code e Boas Práticas**
 
@@ -113,8 +113,8 @@ Você deve projetar um schema que suporte:
 #### Edge Cases a Considerar
 
 1. [x] **Race Condition**: 2 usuários clicam no último assento disponível no mesmo milissegundo
-2. **Deadlock**: Usuário A reserva assentos 1 e 3, Usuário B reserva assentos 3 e 1, ambos tentam reservar o assento do outro
-3. **Idempotência**: Cliente reenvia mesma requisição por timeout
+2. [x] **Deadlock**: Usuário A reserva assentos 1 e 3, Usuário B reserva assentos 3 e 1, ambos tentam reservar o assento do outro
+3. [x] **Idempotência**: Cliente reenvia mesma requisição por timeout
 4. [x] **Expiração**: Reservas não confirmadas devem liberar o assento automaticamente após 30 segundos
 
 ### Diferenciais (Opcional - Pontos Extra)
@@ -127,7 +127,7 @@ Os itens abaixo são opcionais e darão pontos extras na avaliação:
 - [x] **Retry Inteligente**: Sistema de retry com backoff exponencial
 - [ ] **Processamento em Batch**: Processar mensagens em lotes
 - [ ] **Testes de Integração/Concorrência**: Simular múltiplos usuários simultaneamente
-- [ ] **Rate Limiting**: Limitar requisições por IP/usuário
+- [x] **Rate Limiting**: Limitar requisições por IP/usuário
 
 ### Critérios de Avaliação
 

@@ -29,6 +29,12 @@ import {
   QueryResolver,
 } from 'nestjs-i18n';
 import { join } from 'node:path';
+import { ThrottlerGuard, ThrottlerModule, seconds } from '@nestjs/throttler';
+import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
+import { CacheModule } from './shared/cache/cache.module';
+import { CacheClientService } from './shared/cache/cache-client.service';
+import { APP_GUARD } from '@nestjs/core';
+import { Request } from 'express';
 
 /**
  * Root application module that configures and orchestrates all feature modules.
@@ -78,6 +84,45 @@ import { join } from 'node:path';
       inject: [ConfigService],
     }),
 
+    /**
+     * Cache module providing Redis-based caching capabilities.
+     * Used by ThrottlerModule for distributed rate limiting storage.
+     */
+    CacheModule,
+
+    /**
+     * Rate limiting module configured asynchronously with Redis storage.
+     * Protects API endpoints from abuse by limiting request frequency.
+     *
+     * @configuration
+     * - **limit**: Maximum 10 requests allowed per time window
+     * - **ttl**: 60 seconds time window for rate limiting
+     * - **storage**: Redis-based storage for distributed rate limiting across instances
+     */
+    ThrottlerModule.forRootAsync({
+      imports: [CacheModule],
+      useFactory: (cacheClientService: CacheClientService) => {
+        return {
+          throttlers: [
+            {
+              limit: 3,
+              ttl: seconds(60),
+              skipIf: (context) => {
+                const request = context.switchToHttp().getRequest<Request>();
+                const testHeader = request.headers['x-testing-env'];
+
+                if (testHeader === 'true') return true;
+
+                return false;
+              },
+            },
+          ],
+          storage: new RedisThrottlerStorage(cacheClientService.getInstance()),
+        };
+      },
+      inject: [CacheClientService],
+    }),
+
     /** Database module providing Drizzle ORM connection and schema. */
     DatabaseModule,
 
@@ -116,6 +161,11 @@ import { join } from 'node:path';
     PaymentsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

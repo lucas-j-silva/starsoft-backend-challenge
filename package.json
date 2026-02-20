@@ -23,6 +23,7 @@
   "dependencies": {
     "@nestjs-cls/transactional": "^3.2.0",
     "@nestjs-cls/transactional-adapter-drizzle-orm": "^1.2.3",
+    "@nestjs-redis/throttler-storage": "^1.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",
@@ -31,6 +32,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/schedule": "^6.1.1",
     "@nestjs/swagger": "^11.2.6",
+    "@nestjs/throttler": "^6.5.0",
     "@redis-kit/lock": "0.1.0-3",
     "@scalar/nestjs-api-reference": "^1.0.23",
     "@thallesp/nestjs-better-auth": "^2.4.0",

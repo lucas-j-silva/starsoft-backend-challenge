@@ -12,11 +12,14 @@ import {
 } from 'nestjs-i18n';
 import { IdempotencyKeyInterceptor } from './shared/interceptors/idempotency-key.interceptor';
 import { CacheClientService } from './shared/cache/cache-client.service';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bodyParser: false,
   });
+
+  app.set('trust proxy', 'loopback');
 
   app.enableShutdownHooks();
 
@@ -59,6 +62,12 @@ async function bootstrap() {
       client: {
         clientId: 'kafka-consumer',
         brokers: configService.getOrThrow<string>('KAFKA_BROKERS').split(','),
+        retry: {
+          initialRetryTime: 1500,
+          retries: 8,
+          maxRetryTime: 5000,
+          factor: 2,
+        },
       },
       consumer: {
         groupId: 'kafka-consumer-group',

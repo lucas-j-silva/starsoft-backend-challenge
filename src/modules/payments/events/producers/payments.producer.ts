@@ -81,6 +81,12 @@ export class PaymentsProducer {
         brokers: this.configService
           .getOrThrow<string>('KAFKA_BROKERS')
           .split(','),
+        retry: {
+          initialRetryTime: 1500,
+          retries: 8,
+          maxRetryTime: 5000,
+          factor: 2,
+        },
       },
     });
   }
