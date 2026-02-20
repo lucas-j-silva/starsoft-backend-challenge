@@ -2,8 +2,12 @@
 
 ## Conteúdo
 
-- [Estrutura](#estrutura)
+- [Visão geral](#visão-geral)
+- [Tecnologias Escolhidas](#tecnologias-escolhidas)
+- [Estratégias Implementadas](#estratégias-implementadas)
 - [Decisões](#decisões)
+- [Como executar](#como-executar)
+- [Estrutura](#estrutura)
 
 ## Visão Geral
 
@@ -63,6 +67,99 @@ Para validação de dados de entrada, utilizei **class-validator** e **class-tra
 ### Documentação - Swagger/OpenAPI
 
 A documentação da API foi gerada automaticamente com **@nestjs/swagger**, disponível em `/api-docs`, facilitando a exploração e teste dos endpoints.
+
+## Estratégias Implementadas
+
+Esta solução foi cuidadosamente desenhada para atender ao desafio de venda de ingressos em um ambiente distribuído, alta concorrência e múltiplas instâncias da API. Abaixo, destaco as principais estratégias e mecanismos utilizados para garantir a integridade das reservas e a escalabilidade do sistema:
+
+### 1. **Controle de Concorrência e Race Conditions**
+
+- **Reservas com Lock Distribuído**: Ao receber uma requisição de reserva de assentos, o sistema utiliza Redis (cache distribuído) para aplicar locks nos assentos selecionados. Isso previne que múltiplos usuários reservem o mesmo assento ao mesmo tempo, mesmo em situações de concorrência extrema.
+- **Verificação de Disponibilidade em Tempo Real**: Antes de efetivar a reserva, a aplicação verifica no Redis e no banco se o assento está disponível, evitando vendas duplicadas.
+
+### 2. **Coordenação entre Instâncias e Consistência**
+
+- **Ambiente Clusterizado**: O sistema pode ser executado com múltiplas instâncias da API (via Docker Compose Cluster com NGINX load balancer), com Redis Sentinel para alta disponibilidade do cache e Postgres configurado com master/replica, garantindo robustez e coordenação apropriada entre nós.
+- **Mensageria Assíncrona (Kafka)**: Toda a comunicação entre partes desacopladas do sistema (ex: sessions <-> payments) ocorre via eventos Kafka, o que permite consistência eventual e resiliência no processamento de fluxos críticos (reserva, pagamento, expiração).
+
+### 3. **Expiração e Liberação de Assentos**
+
+- **Reservas Temporárias com TTL**: As reservas têm validade de 30 segundos (gerenciado via TTL/expire automático no Redis). Se o pagamento não for confirmado neste tempo, a reserva expira automaticamente e o assento volta a ficar disponível.
+- **Eventos de Expiração**: A expiração publica eventos na mensageria para sincronizar todos os componentes e liberar adequadamente os recursos.
+
+### 4. **Pagamento e Idempotência**
+
+- **Confirmação de Pagamento com Idempotência**: O endpoint de pagamento é protegido por mecanismo de checagem de status, garantindo que múltiplas tentativas de confirmação para a mesma reserva não gerem inconsistências (ex: double confirmation ou erro por timeout/retry do cliente).
+- **Conversão de Reserva em Venda Definitiva**: O pagamento aprovado converte a reserva (temporária) em venda definitiva no banco, sempre utilizando transações para segurança.
+
+<!-- ### 5. **Deadlock Prevention**
+
+- **Ordem Determinística dos Locks**: Sempre que múltiplos assentos são reservados na mesma operação, os locks são adquiridos em ordem ordenada (ex: por id do assento), evitando intertravamento entre processos concorrentes. -->
+
+### 5. **Escalabilidade e Resiliência**
+
+- **Uso Intenso de Cache**: Leitura e validação rápida de disponibilidade de assentos utilizando Redis, reduzindo carga no banco relacional e permitindo alta capacidade de resposta em concorrência.
+- **Retry Inteligente**: Uso nativo das estratégias de retry/backoff do NestJS para a mensageria, aumentando a confiabilidade na entrega e processamento dos eventos.
+
+### 6. **Transações e Integridade**
+
+- **Decoração com @Transactional()**: Operações críticas (como reservar assento e atualizar status após pagamento) são executadas em transações atômicas, garantindo integridade do banco mesmo em caso de falhas parciais ou erro no envio de eventos.
+
+### 7. **Boas práticas e Clean Code**
+
+- **Separação Clara de Responsabilidades**: Uso de módulos por domínio, controllers enxutos, services e use-cases para regras de negócio, e repositórios para acesso a dados.
+- **Tratamento Customizado de Exceções**: Exceções definidas para cenários esperados (assento já reservado, reserva expirada, etc.) melhoram feedback para o cliente e facilitam debug.
+- **Documentação, ESLint, Prettier**: Projeto segue padrões de código, documentação por Swagger e ferramentas automáticas de formatação/lint.
+
+---
+
+Estas estratégias juntas asseguram que nenhum assento seja vendido duas vezes, o sistema seja robusto em ambientes distribuídos, suportando concorrência real, e a experiência do usuário seja confiável e rápida.
+
+## Decisões
+
+No decorrer da criação desse projeto muitas decisões foram tomadas, gostaria de compartilhar as principais:
+
+### **Padrão de projeto:**
+
+- A forma na qual eu decidi estruturar o projeto e não utilizar uma arquitetura hexagonal, DDD, ou qualquer outro design pattern. Foi pensando justamente em como vamos lidar com os projetos dentro da Starsoft (kube por exemplo) com uma arquitetura mais simples e direta.
+
+### **Packages & Microsserviços:**
+
+- A estrutura de módulos criada no projeto funcionaria muito bem caso fosse necessário separa-la em packages, pensando em uma escala maior uma migração para microsserviços precisaria de uma refatoração um pouco mais complexa em relação a como os módulos se comunicam, um for exemplo seria a deduplicação de dados em um scenario no qual o catalogo de filmes fosse isolado do domínio de sessões seria interessante mantermos uma cópia dos dados essenciais de filmes no contexto de sessões.
+
+<!-- ### **Cluster:**
+
+- O cenário do problema inicial indica múltiplas aplicações rodando ao mesmo tempo, com isso decidi por criar um arquivo [docker-compose.cluster.yml](#) com a configuração necessária para rodar um cenário com múltiplas instancias da API, do banco de dados Redis, e do Postgres. Assim podendo realizar testes mais precisos! -->
+
+<!-- - Para fazer a API rodar com múltiplas instancias utilizei o **NGINX** como load balancer para distribuir as requisições entre as aplicações.
+
+- Para o banco de dados Redis utilizei o **Redis Sentinel**, provendo alta disponibilidade e "Automatic failover", caso o banco **master** comece a ter mal funcionamento uma das **replicas** assume o controle.
+
+- Para o banco de dados Postgres utilizei uma configuração com **1 master e 1 replica**, onde o master é responsável por todas as operações de escrita e a replica por operações de leitura, garantindo assim maior disponibilidade e distribuição de carga.
+
+- Para o sistema de mensageria utilizei o Kafka, acabei não entrando muito a fundo sobre kafka distribuído, logo utilizei somente uma instancia normal. -->
+
+<!-- ### **Cache:**
+
+- Um dos principais pilares para um sistema escalável é a utilização de cache, para rotas mais primordiais como a **reserva de assentos** utilize o Redis para controlar disponibilidade e reservas temporárias, em outras rotas utilizei a própria api de cache do drizzle-orm. -->
+
+### **Mensageria:**
+
+- Para a mensageria entre components utilizei Kafka juntamente com o pacote próprio do NestJs, provendo assim uma serie de ferramentas úteis para a integridade das mensagens como estrategias de **retry** já existentes.
+
+- Outro ponto importante que tenho visto muito ultimamente é o **Outbox pattern**, decidi não utilizar nesse projeto pois não vi a necessidade, pensando no cenário do problema (10 usuários tentando resgatar ao mesmo tempo) acredito que utilizar o Outbox pattern seria matar um coelho com uma bazuca, teríamos um breve delay no envio de mensagens esperando o relay executar, algo primordial nesse caso das reservas expirarem em 30 segundos. Utilizando a lib do NestJs o envio de mensagens possui **retry inteligente**, e com o decorator `@Transactional()` caso tenha uma falha no envio da mensagem a requisição inteira é revertida.
+
+<!-- ### **Exceções:**
+
+- Criei uma [classe customizada](#) como base para exceções customizadas possuindo suporte para o **i18n** com argumentos e **statusCode**. -->
+
+### **Transações:**
+
+- Algo muito importante em operações mais complexas que envolvem múltiplas buscas/escritas e a chamada de outros "serviços" são as transações, pesquisei sobre e encontrei uma forma de utilizar um decorator `@Transactional()` com drizzle-orm no NestJs, basta utilizar a lib [`@nestjs-cls/transactional`](https://papooch.github.io/nestjs-cls/plugins/available-plugins/transactional).
+
+- No [use-case de reservar assento](/src/modules/sessions/seats/use-cases/reserve-session-seat.use-case.ts) isso acaba sendo muito util para conter falhas, um forte exemplo seria a falha na publicação de mensagens, impedindo assim que seja possível realizar o pagamento da reserva. Com decorator `@Transactional()` ele identifica qualquer erro recebido dentro da função e automaticamente já realiza um Rollback de todas as queries realizadas nesse contexto.
+
+<!-- ### -->
 
 ## Como Executar
 
@@ -135,53 +232,6 @@ docker compose exec api /bin/sh
 npm run seeders:run
 ```
 
-## Estratégias Implementadas
-
-Esta solução foi cuidadosamente desenhada para atender ao desafio de venda de ingressos em um ambiente distribuído, alta concorrência e múltiplas instâncias da API. Abaixo, destaco as principais estratégias e mecanismos utilizados para garantir a integridade das reservas e a escalabilidade do sistema:
-
-### 1. **Controle de Concorrência e Race Conditions**
-
-- **Reservas com Lock Distribuído**: Ao receber uma requisição de reserva de assentos, o sistema utiliza Redis (cache distribuído) para aplicar locks nos assentos selecionados. Isso previne que múltiplos usuários reservem o mesmo assento ao mesmo tempo, mesmo em situações de concorrência extrema.
-- **Verificação de Disponibilidade em Tempo Real**: Antes de efetivar a reserva, a aplicação verifica no Redis e no banco se o assento está disponível, evitando vendas duplicadas.
-
-### 2. **Coordenação entre Instâncias e Consistência**
-
-- **Ambiente Clusterizado**: O sistema pode ser executado com múltiplas instâncias da API (via Docker Compose Cluster com NGINX load balancer), com Redis Sentinel para alta disponibilidade do cache e Postgres configurado com master/replica, garantindo robustez e coordenação apropriada entre nós.
-- **Mensageria Assíncrona (Kafka)**: Toda a comunicação entre partes desacopladas do sistema (ex: sessions <-> payments) ocorre via eventos Kafka, o que permite consistência eventual e resiliência no processamento de fluxos críticos (reserva, pagamento, expiração).
-
-### 3. **Expiração e Liberação de Assentos**
-
-- **Reservas Temporárias com TTL**: As reservas têm validade de 30 segundos (gerenciado via TTL/expire automático no Redis). Se o pagamento não for confirmado neste tempo, a reserva expira automaticamente e o assento volta a ficar disponível.
-- **Eventos de Expiração**: A expiração publica eventos na mensageria para sincronizar todos os componentes e liberar adequadamente os recursos.
-
-### 4. **Pagamento e Idempotência**
-
-- **Confirmação de Pagamento com Idempotência**: O endpoint de pagamento é protegido por mecanismo de checagem de status, garantindo que múltiplas tentativas de confirmação para a mesma reserva não gerem inconsistências (ex: double confirmation ou erro por timeout/retry do cliente).
-- **Conversão de Reserva em Venda Definitiva**: O pagamento aprovado converte a reserva (temporária) em venda definitiva no banco, sempre utilizando transações para segurança.
-
-<!-- ### 5. **Deadlock Prevention**
-
-- **Ordem Determinística dos Locks**: Sempre que múltiplos assentos são reservados na mesma operação, os locks são adquiridos em ordem ordenada (ex: por id do assento), evitando intertravamento entre processos concorrentes. -->
-
-### 5. **Escalabilidade e Resiliência**
-
-- **Uso Intenso de Cache**: Leitura e validação rápida de disponibilidade de assentos utilizando Redis, reduzindo carga no banco relacional e permitindo alta capacidade de resposta em concorrência.
-- **Retry Inteligente**: Uso nativo das estratégias de retry/backoff do NestJS para a mensageria, aumentando a confiabilidade na entrega e processamento dos eventos.
-
-### 6. **Transações e Integridade**
-
-- **Decoração com @Transactional()**: Operações críticas (como reservar assento e atualizar status após pagamento) são executadas em transações atômicas, garantindo integridade do banco mesmo em caso de falhas parciais ou erro no envio de eventos.
-
-### 7. **Boas práticas e Clean Code**
-
-- **Separação Clara de Responsabilidades**: Uso de módulos por domínio, controllers enxutos, services e use-cases para regras de negócio, e repositórios para acesso a dados.
-- **Tratamento Customizado de Exceções**: Exceções definidas para cenários esperados (assento já reservado, reserva expirada, etc.) melhoram feedback para o cliente e facilitam debug.
-- **Documentação, ESLint, Prettier**: Projeto segue padrões de código, documentação por Swagger e ferramentas automáticas de formatação/lint.
-
----
-
-Estas estratégias juntas asseguram que nenhum assento seja vendido duas vezes, o sistema seja robusto em ambientes distribuídos, suportando concorrência real, e a experiência do usuário seja confiável e rápida.
-
 ## Estrutura
 
 A estrutura do projeto foi feita pensando em responsabilidades separadas, sendo assim cada módulo possui sua própria lógica, sendo alguns deles divididos em submódulos. Em módulos diretamente acoplados (movies, rooms -> sessions), a comunicação acontece por meio da importação de serviços, já em módulos nos quais o desacoplamento seria "essencial" pensando em uma escala futura (sessions <-> payments), a comunicação é realizada através de mensageria assíncrona (kafka).
@@ -208,7 +258,7 @@ A estrutura do projeto foi feita pensando em responsabilidades separadas, sendo 
 
 ### modules/auth
 
-O módulo de autenticação foi feito para ser simples, sem ter que reinventar a roda, utilizando o better-auth juntamente com a lib `@thallesp/nestjs-better-auth` para uma integração mais simples com o NestJs.
+O módulo de autenticação foi feito para ser simples, sem ter que reinventar a roda, utilizando o better-auth juntamente com a lib [`@thallesp/nestjs-better-auth`](https://github.com/ThallesP/nestjs-better-auth) para uma integração mais simples com o NestJs.
 
 ```
 └── 📁auth
@@ -481,48 +531,74 @@ O módulo de **pagamentos** é responsável por receber eventos de criação de 
     └── payments.module.ts
 ```
 
-## Decisões
+## Testes
 
-No decorrer da criação desse projeto muitas decisões foram tomadas, gostaria de compartilhar as principais:
+### Como executar os testes:
 
-### **Padrão de projeto:**
+Para executar os testes é necessário a utilização da ferramenta [**k6**](https://grafana.com/docs/k6/latest/set-up/install-k6/), após instala-la siga os passos:
 
-- A forma na qual eu decidi estruturar o projeto e não utilizar uma arquitetura hexagonal, DDD, ou qualquer outro design pattern. Foi pensando justamente em como vamos lidar com os projetos dentro da Starsoft (kube por exemplo) com uma arquitetura mais simples e direta.
+1. Executar [aplicação](#ambiente-com-alta-disponibilidade-e-múltiplos-nós)
+2. Executar os [seeders](#migrations--seeders)
+3. Executar os testes:
 
-### **Packages & Microsserviços:**
+```bash
+// Rodar teste de carga em reservas de assentos
+npm run load-test:reserve-seat
+```
 
-- A estrutura de módulos criada no projeto funcionaria muito bem caso fosse necessário separa-la em packages, pensando em uma escala maior uma migração para microsserviços precisaria de uma refatoração um pouco mais complexa em relação a como os módulos se comunicam, um for exemplo seria a deduplicação de dados em um scenario no qual o catalogo de filmes fosse isolado do domínio de sessões seria interessante mantermos uma cópia dos dados essenciais de filmes no contexto de sessões.
+### Resultados _load-test:reserve-seat_:
 
-<!-- ### **Cluster:**
+O teste de carga simula **25 usuários virtuais (VUs)** tentando reservar **o mesmo assento simultaneamente**, validando que os mecanismos de lock distribuído (Redlock) e controle de concorrência funcionam corretamente em ambiente distribuído (3 instâncias da API + NGINX).
 
-- O cenário do problema inicial indica múltiplas aplicações rodando ao mesmo tempo, com isso decidi por criar um arquivo [docker-compose.cluster.yml](#) com a configuração necessária para rodar um cenário com múltiplas instancias da API, do banco de dados Redis, e do Postgres. Assim podendo realizar testes mais precisos! -->
+**Cenário:** Todos os 25 VUs disparam ao mesmo tempo uma requisição `POST /sessions/:id/seats/:seatId/reserve` para o mesmo assento.
 
-<!-- - Para fazer a API rodar com múltiplas instancias utilizei o **NGINX** como load balancer para distribuir as requisições entre as aplicações.
+**Thresholds esperados:**
 
-- Para o banco de dados Redis utilizei o **Redis Sentinel**, provendo alta disponibilidade e "Automatic failover", caso o banco **master** comece a ter mal funcionamento uma das **replicas** assume o controle.
+- `successful_reservations == 1` → Exatamente **1 reserva** deve ser confirmada
+- `failed_reservations == 24` → As outras **24 devem receber 409** (`SessionSeatAlreadyReservedException`)
 
-- Para o banco de dados Postgres utilizei uma configuração com **1 master e 1 replica**, onde o master é responsável por todas as operações de escrita e a replica por operações de leitura, garantindo assim maior disponibilidade e distribuição de carga.
+**Resultado:**
 
-- Para o sistema de mensageria utilizei o Kafka, acabei não entrando muito a fundo sobre kafka distribuído, logo utilizei somente uma instancia normal. -->
+```
+  █ THRESHOLDS
 
-<!-- ### **Cache:**
+    failed_reservations
+    ✓ 'count == 24' count=24
 
-- Um dos principais pilares para um sistema escalável é a utilização de cache, para rotas mais primordiais como a **reserva de assentos** utilize o Redis para controlar disponibilidade e reservas temporárias, em outras rotas utilizei a própria api de cache do drizzle-orm. -->
+    successful_reservations
+    ✓ 'count == 1' count=1
 
-### **Mensageria:**
 
-- Para a mensageria entre components utilizei Kafka juntamente com o pacote próprio do NestJs, provendo assim uma serie de ferramentas úteis para a integridade das mensagens como estrategias de **retry** já existentes.
+  █ TOTAL RESULTS
 
-- Outro ponto importante que tenho visto muito ultimamente é o **Outbox pattern**, decidi não utilizar nesse projeto pois não vi a necessidade, pensando no cenário do problema (10 usuários tentando resgatar ao mesmo tempo) acredito que utilizar o Outbox pattern seria matar um coelho com uma bazuca, teríamos um breve delay no envio de mensagens esperando o relay executar, algo primordial nesse caso das reservas expirarem em 30 segundos. Utilizando a lib do NestJs o envio de mensagens possui **retry inteligente**, e com o decorator `@Transactional()` caso tenha uma falha no envio da mensagem a requisição inteira é revertida.
+    checks_total.......: 25      16.067129/s
+    checks_succeeded...: 100.00% 25 out of 25
+    checks_failed......: 0.00%   0 out of 25
 
-<!-- ### **Exceções:**
+    ✓ response is 200 (success) or 409 (expected conflict)
 
-- Criei uma [classe customizada](#) como base para exceções customizadas possuindo suporte para o **i18n** com argumentos e **statusCode**. -->
+    CUSTOM
+    failed_reservations............: 24     15.424444/s
+    successful_reservations........: 1      0.642685/s
 
-### **Transações:**
+    HTTP
+    http_req_duration..............: avg=302.74ms min=6.86ms   med=294.88ms max=531.76ms p(90)=444.73ms p(95)=478.04ms
+      { expected_response:true }...: avg=164.87ms min=6.86ms   med=178.42ms max=252.96ms p(90)=229.61ms p(95)=241.29ms
+    http_req_failed................: 77.41% 24 out of 31
+    http_reqs......................: 31     19.92324/s
 
-- Algo muito importante em operações mais complexas que envolvem múltiplas buscas/escritas e a chamada de outros "serviços" são as transações, pesquisei sobre e encontrei uma forma de utilizar um decorator `@Transactional()` com drizzle-orm no NestJs, basta utilizar a lib [`@nestjs-cls/transactional`](https://papooch.github.io/nestjs-cls/plugins/available-plugins/transactional).
+    EXECUTION
+    iteration_duration.............: avg=335.17ms min=136.38ms med=321.21ms max=532.1ms  p(90)=459.44ms p(95)=484.23ms
+    iterations.....................: 25     16.067129/s
+    vus_max........................: 25     min=25       max=25
 
-- No [use-case de reservar assento](#) isso acaba sendo muito util para conter falhas, um forte exemplo seria a falha na publicação de mensagens, impedindo assim que seja possível realizar o pagamento da reserva. Com decorator `@Transactional()` ele identifica qualquer erro recebido dentro da função e automaticamente já realiza um Rollback de todas as queries realizadas nesse contexto.
+    NETWORK
+    data_received..................: 23 kB  15 kB/s
+    data_sent......................: 10 kB  6.5 kB/s
 
-<!-- ### -->
+
+running (00m01.6s), 00/25 VUs, 25 complete and 0 interrupted iterations
+default ✓ [ 100% ] 25 VUs  00m00.5s/10m0s  25/25 shared iters
+```
+
+Todos os thresholds foram satisfeitos: **1 reserva com sucesso (HTTP 200)** e **24 conflitos esperados (HTTP 409)**. O tempo médio de resposta foi de **302ms**, com o assento vencedor respondendo em ~165ms (tempo médio das respostas bem-sucedidas).

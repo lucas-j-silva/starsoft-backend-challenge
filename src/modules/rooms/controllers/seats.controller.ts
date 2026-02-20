@@ -27,6 +27,7 @@ import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { SeatApiSchema } from '../swagger/schemas';
 import { SeatsPaginationResultApiSchema } from '../swagger/schemas/seats-pagination-result.api-schema';
 import { CreateSeatBodyDto, ListSeatsWithPaginationQueryDto } from '../dtos';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 /**
  * Controller for seat-related operations within a room.
@@ -72,6 +73,7 @@ export class SeatsController {
     name: 'roomId',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
+  @AllowAnonymous()
   async listWithPagination(
     @Param('roomId', ParseUUIDPipe) roomId: string,
     @Query() query: ListSeatsWithPaginationQueryDto,

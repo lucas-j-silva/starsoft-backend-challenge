@@ -19,7 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seeders:run": "npx tsx --env-file=.env seeders/seeder.ts",
-    "migrations:run": "drizzle-kit migrate"
+    "migrations:run": "drizzle-kit migrate",
+    "load-test:reserve-seat": "k6 run --env VUS=25 --env BASE_URL=http://localhost:3333 --env SESSION_ID=aa111111-1111-4111-a111-111111111111 load-tests/reserve-seat.ts"
   },
   "dependencies": {
     "@nestjs-cls/transactional": "^3.2.0",

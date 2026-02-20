@@ -27,6 +27,7 @@ import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { MovieApiSchema } from '../swagger/schemas/movie.api-schema';
 import { PaginationResultDto } from '../../../shared/dtos/pagination-result.dto';
 import { MoviesPaginationResultApiSchema } from '../swagger/schemas/movies-pagination-result.api-schema';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 /**
  * Controller responsible for handling HTTP requests related to movies.
@@ -66,6 +67,7 @@ export class MoviesController {
     description: 'Movies listed successfully',
     type: MoviesPaginationResultApiSchema,
   })
+  @AllowAnonymous()
   async listWithPagination(
     @Query() listMoviesWithPaginationDto: ListMoviesWithPaginationDto,
   ): Promise<PaginationResultDto<MovieSchema>> {
@@ -125,6 +127,7 @@ export class MoviesController {
     name: 'id',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
+  @AllowAnonymous()
   async findById(
     @Param('id', ParseUUIDPipe)
     id: string,

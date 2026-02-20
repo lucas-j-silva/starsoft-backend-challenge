@@ -23,7 +23,11 @@ import {
   SessionSeatReservationSchema,
   SessionSeatSchemaWithRelations,
 } from '../schemas';
-import { Session, type UserSession } from '@thallesp/nestjs-better-auth';
+import {
+  AllowAnonymous,
+  Session,
+  type UserSession,
+} from '@thallesp/nestjs-better-auth';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { SessionSeatWithRelationsApiSchema } from '../swagger/schemas/session-seat.api-schema';
 import { SessionSeatReservationApiSchema } from '../swagger/schemas/session-seat-reservation.api-schema';
@@ -73,6 +77,7 @@ export class SessionSeatsController {
     name: 'sessionId',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
+  @AllowAnonymous()
   async list(
     @Param('sessionId', ParseUUIDPipe) sessionId: string,
   ): Promise<SessionSeatSchemaWithRelations[]> {

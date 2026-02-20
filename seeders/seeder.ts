@@ -130,7 +130,7 @@ async function seed() {
       .onConflictDoUpdate({
         target: [sessionSeatsTable.seatId, sessionSeatsTable.sessionId],
         set: {
-          isAvailable: false,
+          isAvailable: true,
           soldAt: null,
           userId: null,
         },

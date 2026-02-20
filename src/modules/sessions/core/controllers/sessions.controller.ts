@@ -34,6 +34,7 @@ import {
   SessionApiSchema,
   SessionsPaginationResultApiSchema,
 } from '../swagger/schemas/session.api-schema';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 /**
  * Controller responsible for handling HTTP requests related to sessions.
@@ -75,6 +76,7 @@ export class SessionsController {
     name: 'id',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
+  @AllowAnonymous()
   async findSession(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<SessionSchema> {
@@ -98,6 +100,7 @@ export class SessionsController {
     description: 'Sessions listed successfully',
     type: SessionsPaginationResultApiSchema,
   })
+  @AllowAnonymous()
   async listWithPagination(
     @Query() listSessionsWithPaginationDto: ListSessionsWithPaginationDto,
   ): Promise<PaginationResultDto<SessionSchema>> {

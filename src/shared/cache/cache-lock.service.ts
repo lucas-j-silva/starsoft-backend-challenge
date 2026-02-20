@@ -75,8 +75,8 @@ export class CacheLockService {
     this.redlock = new Redlock(
       [this.cacheClientService.getInstance() as unknown as RedisClientType],
       {
-        maxRetryAttempts: 25,
-        retryDelayMs: 100,
+        maxRetryAttempts: 50,
+        retryDelayMs: 50,
       },
     );
   }

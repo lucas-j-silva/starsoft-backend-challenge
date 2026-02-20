@@ -1,0 +1,8 @@
+{
+  "name": "load-tests",
+  "private": true,
+  "description": "k6 load tests for starsoft-backend-challenge",
+  "devDependencies": {
+    "@types/k6": "^0.57.0"
+  }
+}

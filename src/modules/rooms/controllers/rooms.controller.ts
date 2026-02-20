@@ -31,6 +31,7 @@ import {
 } from '@nestjs/swagger';
 import { RoomApiSchema } from '../swagger/schemas/room.api-schema';
 import { RoomsPaginationResultApiSchema } from '../swagger/schemas/rooms-pagination-result.api-schema';
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth';
 
 /**
  * Controller responsible for handling room-related HTTP requests.
@@ -70,6 +71,7 @@ export class RoomsController {
     description: 'The rooms have been successfully retrieved.',
     type: RoomsPaginationResultApiSchema,
   })
+  @AllowAnonymous()
   async listWithPagination(
     @Query() query: ListRoomsWithPaginationDto,
   ): Promise<PaginationResultDto<RoomSchema>> {
@@ -103,6 +105,7 @@ export class RoomsController {
     name: 'id',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
+  @AllowAnonymous()
   async findById(@Param('id', ParseUUIDPipe) id: string): Promise<RoomSchema> {
     return this.roomsService.findById(id);
   }
