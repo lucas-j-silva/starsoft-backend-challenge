@@ -46,6 +46,8 @@ import { Request } from 'express';
  * - **DatabaseModule**: Database connection and Drizzle ORM setup
  * - **ClsModule**: Continuation-local storage with transactional support for Drizzle ORM
  * - **ScheduleModule**: Task scheduling capabilities
+ * - **CacheModule**: Redis-based caching for distributed storage
+ * - **ThrottlerModule**: Rate limiting with Redis storage for distributed environments
  * - **Feature Modules**: AuthModule, MoviesModule, RoomsModule, SessionsModule, PaymentsModule
  *
  * @class AppModule

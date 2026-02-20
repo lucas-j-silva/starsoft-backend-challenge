@@ -73,6 +73,7 @@ export class SeatsRepository {
       .from(seatsTable)
       .limit(limit)
       .offset(offset)
+      .$withCache()
       .where(eq(seatsTable.roomId, roomId));
 
     return new PaginationResultDto<SeatSchema>({
@@ -100,6 +101,7 @@ export class SeatsRepository {
     const seats = await this.txHost.tx
       .select()
       .from(seatsTable)
+      .$withCache()
       .where(eq(seatsTable.roomId, roomId));
 
     return seats;
@@ -165,6 +167,7 @@ export class SeatsRepository {
           eq(seatsTable.column, column),
         ),
       )
+      .$withCache()
       .limit(1);
 
     if (!seat) throw new SeatNotFoundException();

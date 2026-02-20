@@ -106,7 +106,7 @@ export class ReserveSessionSeatUseCase implements IReserveSessionSeatUseCase {
 
     const lock = await this.cacheLockService.acquireLock(
       `locks:reservation:${data.sessionSeatId}`,
-      1000,
+      10000,
     );
 
     if (!lock)

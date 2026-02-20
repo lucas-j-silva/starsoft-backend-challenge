@@ -53,7 +53,8 @@ export class RoomsRepository {
     const [room] = await this.txHost.tx
       .select()
       .from(roomsTable)
-      .where(eq(roomsTable.id, id));
+      .where(eq(roomsTable.id, id))
+      .$withCache();
 
     if (!room) throw new RoomNotFoundException(id);
 
@@ -95,6 +96,7 @@ export class RoomsRepository {
       .from(roomsTable)
       .limit(limit)
       .offset(offset)
+      .$withCache()
       .then((results) => results);
 
     return new PaginationResultDto<RoomSchema>({

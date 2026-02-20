@@ -63,7 +63,8 @@ export class SessionsRepository {
     const [session] = await this.txHost.tx
       .select()
       .from(sessionsTable)
-      .where(eq(sessionsTable.id, id));
+      .where(eq(sessionsTable.id, id))
+      .$withCache();
 
     if (!session) throw new SessionNotFoundException();
 
@@ -98,6 +99,7 @@ export class SessionsRepository {
       .from(sessionsTable)
       .limit(limit)
       .offset(offset)
+      .$withCache()
       .then((results) => results);
 
     return new PaginationResultDto<SessionSchema>({

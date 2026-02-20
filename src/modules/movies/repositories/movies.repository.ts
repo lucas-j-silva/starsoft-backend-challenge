@@ -63,6 +63,7 @@ export class MoviesRepository {
       .from(moviesTable)
       .limit(limit)
       .offset(offset)
+      .$withCache()
       .then((results) => results);
 
     return new PaginationResultDto<MovieSchema>({
@@ -91,7 +92,8 @@ export class MoviesRepository {
     const [movie] = await this.txHost.tx
       .select()
       .from(moviesTable)
-      .where(eq(moviesTable.id, id));
+      .where(eq(moviesTable.id, id))
+      .$withCache();
 
     if (!movie) throw new MovieNotFoundException(id);
 
