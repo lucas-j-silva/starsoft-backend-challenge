@@ -10,6 +10,8 @@ import {
   I18nValidationExceptionFilter,
   I18nValidationPipe,
 } from 'nestjs-i18n';
+import { IdempotencyKeyInterceptor } from './shared/interceptors/idempotency-key.interceptor';
+import { CacheClientService } from './shared/cache/cache-client.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,6 +22,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const i18n = app.get<I18nService>(I18nService);
+  const cacheClientService = app.get(CacheClientService);
 
   const config = new DocumentBuilder()
     .setTitle('Starsoft Backend Challenge')
@@ -36,6 +39,7 @@ async function bootstrap() {
     }),
   );
 
+  app.useGlobalInterceptors(new IdempotencyKeyInterceptor(cacheClientService));
   app.useGlobalPipes(
     new I18nValidationPipe({
       transform: true,
